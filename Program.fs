@@ -5,6 +5,9 @@
 //Transformando todos os loops em recursividade
 //Amém!
 
+//Após uma alteração, não esqueça de dar os dois comandos:
+//1) git pull origin master
+//2) git push origin master 
 open System
 open System.Collections.Generic
 
@@ -48,6 +51,151 @@ let rec ComputandoOperações operação =
     
     match operação with
     | "Conjuntos" ->  printfn"Você escolheu Conjuntos!"
+                      
+                      printf "Com quantos conjuntos você quer trabalhar?: "
+                      let quantidade = int (Console.ReadLine())
+        
+                      let mutable conjunto : HashSet<double>[] = Array.init quantidade (fun _-> HashSet<double>())
+                      let nomes = [|"A";"B";"C";"D";"E";"F";"G";"H";"I";"J";"K";"L";"M";"N"|]
+                      let mapa = Dictionary<string, HashSet<double>>()
+
+                      for i = 0 to quantidade - 1 do
+                          let nome =  if i < nomes.Length  then nomes.[i] else $"Conjunto{i+1}"
+                          mapa.Add(nome, conjunto.[i])
+
+           
+                          printfn $"Adicione os elementos de seu conjunto {nome}, separados por espaços ou ponto e vírgula ou dois pontos: "
+                          printf "%s = { " (nome)
+                          entrada <- Console.ReadLine() 
+                          printf " }"
+                      
+
+                          let valoresString = string entrada
+                          let separadores = [| ' '; ';'; ':' |]
+                          let valoresSeparados = valoresString.Split(separadores, StringSplitOptions.RemoveEmptyEntries)
+
+                          let valoresDouble = Array.map (double) valoresSeparados
+                          conjunto.[i] <- HashSet<double>(valoresDouble)
+            
+                          mapa.Add(nome, conjunto.[i])
+                          
+                      printfn"Seus conjuntos são: "
+
+                      let EscrevaOsconjuntos conjunto =
+
+                          let agrupeSeqElementos =
+                              conjunto|> Seq.map string|> String.concat ", "
+
+                              printfn$"{nomes.[i]}= {{{agrupeSeqElementos conjunto}}}"
+                          printfn ""
+        
+                      for i = 0 to quantidade - 1 do
+
+                      EscrevaOsconjuntos mapa.[nomes.[i]]
+
+
+
+                      let U (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
+                          let resultado = HashSet<double>(A)
+                          resultado.UnionWith(B)
+                      resultado
+
+
+                      let I (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
+                          let resultado = HashSet<double>(A)
+                          resultado.IntersectWith(B)
+                      resultado
+
+                      let D (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
+                          let resultado = HashSet<double>(A)
+                          resultado.ExceptWith(B)
+                      resultado
+
+        
+
+                      let pertence (A: HashSet<double>) (n: int): bool =
+                           if A.Contains (n) then
+                               true
+                           else
+                               false
+
+                      
+
+                      let NotaçãoMatemática A =
+                          A|> Seq.map string|> String.concat ", "
+
+                      let escrevaOconjunto A =
+                          
+                          printfn$"{A}={{{NotaçãoMatemática}}}"
+                          printfn ""
+
+
+       
+                      let rec OperaçõesDeConjuntos =
+                          printfn "" 
+                          printfn "O que você quer calcular?"
+                          printfn "P)Pertence| U)União| I)Intersecção| C)Complementar| D)Diferença| q)Sair"
+                          printfn "Digite a letra inicial da operação que deseja efetuar: "
+                          entrada <- Console.ReadLine()
+
+                          match entrada with
+                          |null    -> failwith "Entrada nula! Digite uma entrada válida!"
+                                      OperaçõesDeConjuntos
+
+                          |"U"|"u" -> let mutable união: HashSet<double>= conjunto.[0]
+                                      for i = 0 to quantidade - 1 do
+                                      U união conjunto.[i+1]
+                                      printfn $"A união dos conjuntos é: {escrevaOconjunto U}"
+                                      //Deseja fazer outra operação com os mesmos conjuntos?(s/n)
+                                      //entrada <- Console.ReadLine()
+                                      //match entrada with
+                                      //|"S"|"s" -> OperaçõesDeConjuntos
+                                      //|"N"|"n" -> printfn "Ok"
+
+                          |"I"|"i" -> let interseção: HashSet<double>= conjunto.[0]
+                                      for i = 0 to quantidade - 1 do
+                                      I interseção conjunto.[i+1]//Vou ter que clonar os conjuntos para não alterá-los
+
+                          |"D"|"d" -> let diferença: HashSet<double>= conjunto.[0]                       
+                                      for i = 0 to quantidade - 1 do
+                                      D diferença conjunto.[i+1]//Vou ter que clonar os conjuntos para não alterá-los
+
+                          |"P"|"p" -> printf "Para qual conjunto você quer testar pertinência? Digite a letra do conjunto: "
+                                      entrada <- Console.ReadLine
+                     
+                                      let letraDoconjunto = entrada
+
+                                      printf "Agora, qual elemento você quer saber se pertence a %s?: " letraDoconjunto
+                                      entrada <- Console.ReadLine
+                     
+                                      let elemento = entrada
+                                      let conjunto =  mapa.[letraDoconjunto] |> Seq.toList |> List.map string |> String.concat ", "
+                     
+
+                                      if mapa.ContainsKey(letraDoconjunto) then
+                                          pertence mapa.[letraDoconjunto] elemento
+                                          if pertence then
+                                             printfn $"O elemento {elemento} pertence a {letraDoconjunto} de fato, pois {letraDoconjunto} = {{{conjunto}}}"       
+                                          else
+                                          printfn $"O elemento {elemento} NÃO pertence a {conjunto}, pois {letraDoconjunto} = {{{conjunto}}}"
+                                      else
+                                      printfn $"O conjunto {conjunto} não existe no mapa"
+
+                          |"Q"|"q" -> Environment.Exit(0)
+
+                          |_       -> printfn "Entrada inválida. Tente novamente." OperaçõesDeConjunto
+
+                      printfn ""
+
+                
+            
+                
+
+        
+
+
+
+        //Permitir o usuário fazer, por exemplo,( A U B inter C) dif D 
     
     
     

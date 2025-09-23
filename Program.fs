@@ -44,8 +44,7 @@ let rec EscolhendoOperações () =
     |"R"|"r" -> operação <- "Raiz quadrada"
     |"!" -> operação <- "Fatorial"
     |"F"|"f" -> operação <- "Fibonacci"
-    
-    
+     
 let rec ComputandoOperações operação =
     
     match operação with
@@ -62,17 +61,14 @@ let rec ComputandoOperações operação =
                           let nome =  if i < nomes.Length  then nomes.[i] else $"Conjunto{i+1}"
                           mapa.Add(nome, conjunto.[i])
 
-           
                           printfn $"Adicione os elementos de seu conjunto {nome}, separados por espaços ou ponto e vírgula ou dois pontos: "
                           printf "%s = { " (nome)
                           entrada <- Console.ReadLine() 
                           printf " }"
                       
-
                           let valoresString = string entrada
                           let separadores = [| ' '; ';'; ':' |]
                           let valoresSeparados = valoresString.Split(separadores, StringSplitOptions.RemoveEmptyEntries)
-
                           let valoresDouble = Array.map (double) valoresSeparados
                           conjunto.[i] <- HashSet<double>(valoresDouble)
             
@@ -92,13 +88,10 @@ let rec ComputandoOperações operação =
 
                       EscrevaOsconjuntos mapa.[nomes.[i]]
 
-
-
                       let U (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
                           let resultado = HashSet<double>(A)
                           resultado.UnionWith(B)
                       resultado
-
 
                       let I (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
                           let resultado = HashSet<double>(A)
@@ -115,7 +108,6 @@ let rec ComputandoOperações operação =
                                true
                            else
                                false
-
                       
                       let NotaçãoMatemática A =
                           A|> Seq.map string|> String.concat ", "
@@ -165,7 +157,6 @@ let rec ComputandoOperações operação =
                                       let elemento = entrada
                                       let conjunto =  mapa.[letraDoconjunto] |> Seq.toList |> List.map string |> String.concat ", "
                      
-
                                       if mapa.ContainsKey(letraDoconjunto) then
                                           pertence mapa.[letraDoconjunto] elemento
                                           if pertence then
@@ -209,8 +200,7 @@ let rec ComputandoOperações operação =
                       printfn "gera(m) o somatório de: %s" somaString 
 
                       printfn"Deseja efetuar mais uma adição? (s\n)"
-
-                      
+              
                       let rec maisUmaadição () =
                           entrada <- Console.ReadLine ()
                           match entrada with

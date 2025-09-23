@@ -8,6 +8,7 @@
 //Após uma alteração, não esqueça de dar os dois comandos:
 //1) git pull origin master
 //2) git push origin master 
+
 open System
 open System.Collections.Generic
 
@@ -21,8 +22,6 @@ let mutable entrada = ""
 
 let mutable operação = ""
 
-
-
 let rec EscolhendoOperações () =
 
     printfn ""
@@ -31,7 +30,6 @@ let rec EscolhendoOperações () =
 
     entrada <- Console.ReadLine()
     
-
     match entrada with
     |null    -> failwith "Entrada nula! Digite uma entrada válida!"
                 EscolhendoOperações ()
@@ -48,9 +46,6 @@ let rec EscolhendoOperações () =
     |"F"|"f" -> operação <- "Fibonacci"
     
     
-
-
-
 let rec ComputandoOperações operação =
     
     match operação with
@@ -115,8 +110,6 @@ let rec ComputandoOperações operação =
                           resultado.ExceptWith(B)
                       resultado
 
-        
-
                       let pertence (A: HashSet<double>) (n: int): bool =
                            if A.Contains (n) then
                                true
@@ -124,7 +117,6 @@ let rec ComputandoOperações operação =
                                false
 
                       
-
                       let NotaçãoMatemática A =
                           A|> Seq.map string|> String.concat ", "
 
@@ -133,8 +125,6 @@ let rec ComputandoOperações operação =
                           printfn$"{A}={{{NotaçãoMatemática}}}"
                           printfn ""
 
-
-       
                       let rec OperaçõesDeConjuntos =
                           printfn "" 
                           printfn "O que você quer calcular?"
@@ -191,19 +181,8 @@ let rec ComputandoOperações operação =
 
                       printfn ""
 
-                
-            
-                
-
-        
-
-
-
         //Permitir o usuário fazer, por exemplo,( A U B inter C) dif D 
-    
-    
-    
-                     
+               
     | "Adição" ->     printfn"Você escolheu \"Adição\""  
                       printf "Digite os valores a serem somados com espaços entre eles: "
 
@@ -252,14 +231,7 @@ let rec ComputandoOperações operação =
                           |_ -> failwith "Entrada inesperada! Digite novamente: "
                                 maisUmaadição ()
 
-                      printfn""
-
-
-
-                            
-                      
-
-                      
+                      printfn""       
     
     | "Multiplicação" -> printfn "Você escolheu Multiplicação!" //Copiar e colar o código da Adição acima. Trocar apenas a operação
 

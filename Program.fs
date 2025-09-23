@@ -33,6 +33,10 @@ let rec EscolhendoOperações () =
     
 
     match entrada with
+    |null    -> failwith "Entrada nula! Digite uma entrada válida!"
+                EscolhendoOperações ()
+    |_ -> failwith "Input inesperado. Tente novamente!" EscolhendoOperações ()
+    |"Q"|"q" -> Environment.Exit(0)
     |"C"|"c" -> operação <- "Conjuntos"
     |"A"|"a" -> operação <- "Adição"
     |"S"|"s" -> operação <- "Subtração"
@@ -42,8 +46,8 @@ let rec EscolhendoOperações () =
     |"R"|"r" -> operação <- "Raiz quadrada"
     |"!" -> operação <- "Fatorial"
     |"F"|"f" -> operação <- "Fibonacci"
-    |"Q"|"q" -> Environment.Exit(0)
-    |_ -> failwith "Input inesperado. Tente novamente!" EscolhendoOperações ()
+    
+    
 
 
 

@@ -29,24 +29,28 @@ let rec EscolhendoOperações () =
     printfn "C) Conjuntos  A) Adição  S) Subtração  M) Multiplicação  D) Divisão  E) Exponenciação \nR) Raiz quadrada  !) Fatorial!  F) Fibonacci q) Sair: "
 
     entrada <- Console.ReadLine()
-    
-    
-    match entrada with
-    | None -> failwith "Digite uma entrada válida!: "
-              EscolhendoOperações ()
-//  | Some valor -> // tudo certo
-    |"Q"|"q" -> Environment.Exit(0)
-    |"C"|"c" -> operação <- "Conjuntos"
-    |"A"|"a" -> operação <- "Adição"
-    |"S"|"s" -> operação <- "Subtração"
-    |"M"|"m" -> operação <- "Multiplicação"
-    |"D"|"d" -> operação <- "Divisão"
-    |"E"|"e" -> operação <- "Exponenciação"
-    |"R"|"r" -> operação <- "Raiz quadrada"
-    |"!" -> operação <- "Fatorial"
-    |"F"|"f" -> operação <- "Fibonacci"
-    |_ -> failwith "Oooops, input inesperado.. Digite uma inicial de operação válida!" EscolhendoOperações ()
      
+    match entrada with
+    | None -> 
+              failwith "Digite uma entrada válida!: "
+              EscolhendoOperações ()
+
+    | Some valor ->
+                    match valor with
+                    | "Q" | "q" -> Environment.Exit(0)
+                    | "C" | "c" -> operação <- "Conjuntos"
+                    | "A" | "a" -> operação <- "Adição"
+                    | "S" | "s" -> operação <- "Subtração"
+                    | "M" | "m" -> operação <- "Multiplicação"
+                    | "D" | "d" -> operação <- "Divisão"
+                    | "E" | "e" -> operação <- "Exponenciação"
+                    | "R" | "r" -> operação <- "Raiz quadrada"
+                    | "!" -> operação <- "Fatorial"
+                    | "F" | "f" -> operação <- "Fibonacci"
+                    | _ -> failwith "Oooops, input inesperado.. Digite uma inicial de operação válida!"
+                           EscolhendoOperações ()
+
+
 let rec ComputandoOperações operação =
     
     match operação with
@@ -54,13 +58,47 @@ let rec ComputandoOperações operação =
                       
                       printf "Com quantos conjuntos você quer trabalhar?: "
 
-                      let mutable quantidade : double = 0.0
-
-                      entrada <- Console.ReadLine()
+                      let mutable quantidade : int = 0
 
                       printfn ""
+
+                      //Tratando entrada incorreta funcional:
+                      (*
+                      ->Sempre buscar funções puras e evitar efeitos colaterais
+
+                      ->Minimizar a colateralidade separando funções puras da
+                        entrada do usuário e da saída para o console
+
+                      ->Assim fica mais fácil identificar bugs e testar o código
+                        "Se ocorrer um erro, o problema quase nunca está
+                        na função pura"
+
+                        Então, respeitando os princípios funcionais da programação,
+                        Dividimos o while abaixo em duas ou três partes separadas
+                       *)
+                        //Lendo o input do usuário e retornando um float option
+                        //ou nada, caso a conversão falhe
+
+                      let tryParseInt (input: string) =
+                          match Int64.TryParse(input) with
+                          | (true, value) -> Some value
+                          | (false, _) -> None
+                        
+                        //Função recursiva que pede um número até que o usuário 
+                        //digite um valor válido
+                      let rec pedirNúmero () =
+
+                          Console.WriteLine("Por favor, digite um Número!: ")
+
+                          let input = Console.ReadLine()
+
+                          match tryParseInt input with
+                          | Some value -> quantidade <-value
+                          | None -> printf "Por favor, digite um número válido: "
+                                    pedirNúmero ()
+                      printfn""
                       
-                      //Tratando entrada incorreta
+                     (*Tratando entrada incorreta imperativa e Csharpiana
                       while not (double.TryParse(entrada, &quantidade)) do 
 
                           Console.WriteLine("Por favor, digite um Número!: ")
@@ -68,7 +106,8 @@ let rec ComputandoOperações operação =
                           entrada <- Console.ReadLine()
 
                           Console.WriteLine()
-        
+                      *)
+
                       let mutable conjunto : HashSet<double>[] = Array.init quantidade (fun _-> HashSet<double>())
                       let nomes = [|"A";"B";"C";"D";"E";"F";"G";"H";"I";"J";"K";"L";"M";"N"|]
                       let mapa = Dictionary<string, HashSet<double>>()

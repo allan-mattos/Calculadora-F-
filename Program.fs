@@ -30,10 +30,11 @@ let rec EscolhendoOperações () =
 
     entrada <- Console.ReadLine()
     
+    
     match entrada with
-    |null    -> failwith "Entrada nula! Digite uma entrada válida!"
-                EscolhendoOperações ()
-    |_ -> failwith "Input inesperado. Tente novamente!" EscolhendoOperações ()
+    | None -> failwith "Digite uma entrada válida!: "
+              EscolhendoOperações ()
+//  | Some valor -> // tudo certo
     |"Q"|"q" -> Environment.Exit(0)
     |"C"|"c" -> operação <- "Conjuntos"
     |"A"|"a" -> operação <- "Adição"
@@ -44,6 +45,7 @@ let rec EscolhendoOperações () =
     |"R"|"r" -> operação <- "Raiz quadrada"
     |"!" -> operação <- "Fatorial"
     |"F"|"f" -> operação <- "Fibonacci"
+    |_ -> failwith "Oooops, input inesperado.. Digite uma inicial de operação válida!" EscolhendoOperações ()
      
 let rec ComputandoOperações operação =
     
@@ -51,7 +53,21 @@ let rec ComputandoOperações operação =
     | "Conjuntos" ->  printfn"Você escolheu Conjuntos!"
                       
                       printf "Com quantos conjuntos você quer trabalhar?: "
-                      let quantidade = int (Console.ReadLine())
+
+                      let mutable quantidade : double = 0.0
+
+                      entrada <- Console.ReadLine()
+
+                      printfn ""
+                      
+                      //Tratando entrada incorreta
+                      while not (double.TryParse(entrada, &quantidade)) do 
+
+                          Console.WriteLine("Por favor, digite um Número!: ")
+     
+                          entrada <- Console.ReadLine()
+
+                          Console.WriteLine()
         
                       let mutable conjunto : HashSet<double>[] = Array.init quantidade (fun _-> HashSet<double>())
                       let nomes = [|"A";"B";"C";"D";"E";"F";"G";"H";"I";"J";"K";"L";"M";"N"|]
@@ -88,35 +104,42 @@ let rec ComputandoOperações operação =
 
                       EscrevaOsconjuntos mapa.[nomes.[i]]
 
+                      //Definindo a função U que processa a união de dois conjuntos dados como parâmetros
                       let U (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
                           let resultado = HashSet<double>(A)
                           resultado.UnionWith(B)
                       resultado
 
+                      //Definindo a função I que processa a interseção de dois conjuntos dados como parâmetros
                       let I (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
                           let resultado = HashSet<double>(A)
                           resultado.IntersectWith(B)
                       resultado
 
+                      //Definindo a função D que processa a diferença de dois conjuntos dados como parâmetros
                       let D (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
                           let resultado = HashSet<double>(A)
                           resultado.ExceptWith(B)
                       resultado
 
+                      //Definindo a função pertence que verifica se um elemento n pertence ao conjunto A ou não
                       let pertence (A: HashSet<double>) (n: int): bool =
                            if A.Contains (n) then
                                true
                            else
                                false
                       
+                      //Função que sequencia um conjunto na notação matemática padrão
                       let NotaçãoMatemática A =
                           A|> Seq.map string|> String.concat ", "
 
+                      //Função que escreve o conjunto na notação matemática padrão
                       let escrevaOconjunto A =
                           
                           printfn$"{A}={{{NotaçãoMatemática}}}"
                           printfn ""
 
+                      //Função recursiva de escolha entre várias operações de conjuntos diferentes
                       let rec OperaçõesDeConjuntos =
                           printfn "" 
                           printfn "O que você quer calcular?"
@@ -140,11 +163,11 @@ let rec ComputandoOperações operação =
 
                           |"I"|"i" -> let interseção: HashSet<double>= conjunto.[0]
                                       for i = 0 to quantidade - 1 do
-                                      I interseção conjunto.[i+1]//Vou ter que clonar os conjuntos para não alterá-los
+                                      I interseção conjunto.[i+1]
 
                           |"D"|"d" -> let diferença: HashSet<double>= conjunto.[0]                       
                                       for i = 0 to quantidade - 1 do
-                                      D diferença conjunto.[i+1]//Vou ter que clonar os conjuntos para não alterá-los
+                                      D diferença conjunto.[i+1]
 
                           |"P"|"p" -> printf "Para qual conjunto você quer testar pertinência? Digite a letra do conjunto: "
                                       entrada <- Console.ReadLine

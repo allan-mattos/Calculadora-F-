@@ -18,6 +18,13 @@ printfn ""
 
 printfn "(Pressione \"q\" para sair!)"
 
+//Função que trata entradas de inteiros incorretas
+let tryParseInt (input: string) =
+
+    match Int32.TryParse(input) with
+    | (true, value) -> Some value
+    | (false, _) -> None
+
 let mutable entrada = ""
 
 let mutable operação = ""
@@ -28,14 +35,17 @@ let rec EscolhendoOperações () =
     printfn "Com qual operação você quer trabalhar?:  "
     printfn "C) Conjuntos  A) Adição  S) Subtração  M) Multiplicação  D) Divisão  E) Exponenciação \nR) Raiz quadrada  !) Fatorial!  F) Fibonacci q) Sair: "
 
-    entrada <- Console.ReadLine()
+    let entrada1: option<string> =
+    match Console.ReadLine() with
+    | null -> None
+    | valor -> Some valor
      
-    match entrada with
-    | None -> 
-              failwith "Digite uma entrada válida!: "
-              EscolhendoOperações ()
+    match entrada1 with
+        | None -> 
+                    failwith "Digite uma entrada válida!: "
+                    EscolhendoOperações ()
 
-    | Some valor ->
+        | Some valor ->
                     match valor with
                     | "Q" | "q" -> Environment.Exit(0)
                     | "C" | "c" -> operação <- "Conjuntos"
@@ -79,10 +89,7 @@ let rec ComputandoOperações operação =
                         //Lendo o input do usuário e retornando um float option
                         //ou nada, caso a conversão falhe
 
-                      let tryParseInt (input: string) =
-                          match Int64.TryParse(input) with
-                          | (true, value) -> Some value
-                          | (false, _) -> None
+                    
                         
                         //Função recursiva que pede um número até que o usuário 
                         //digite um valor válido

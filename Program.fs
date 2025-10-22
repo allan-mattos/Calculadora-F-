@@ -33,19 +33,19 @@ let rec EscolhendoOperações () =
 
     printfn ""
     printfn "Com qual operação você quer trabalhar?:  "
-    printfn "C) Conjuntos  A) Adição  S) Subtração  M) Multiplicação  D) Divisão  E) Exponenciação \nR) Raiz quadrada  !) Fatorial!  F) Fibonacci q) Sair: "
+    printfn "C) Conjuntos |  A) Adição | S) Subtração | M) Multiplicação | D) Divisão | E) Exponenciação | \nR) Raiz quadrada | !) Fatorial! | F) Fibonacci | q) Sair: "
 
     let entrada1: option<string> =
-    match Console.ReadLine() with
-    | null -> None
-    | valor -> Some valor
+        match Console.ReadLine() with
+        | null -> None
+        | valor -> Some valor
      
     match entrada1 with
-        | None -> 
+    | None -> 
                     failwith "Digite uma entrada válida!: "
                     EscolhendoOperações ()
 
-        | Some valor ->
+    | Some valor ->
                     match valor with
                     | "Q" | "q" -> Environment.Exit(0)
                     | "C" | "c" -> operação <- "Conjuntos"
@@ -61,9 +61,9 @@ let rec EscolhendoOperações () =
                            EscolhendoOperações ()
 
 
-let rec ComputandoOperações operação =
+let rec ComputandoOperações escolha =
     
-    match operação with
+    match escolha with
     | "Conjuntos" ->  printfn"Você escolheu Conjuntos!"
                       
                       printf "Com quantos conjuntos você quer trabalhar?: "
@@ -72,8 +72,7 @@ let rec ComputandoOperações operação =
 
                       printfn ""
 
-                      //Tratando entrada incorreta funcional:
-                      (*
+                    (*
                       ->Sempre buscar funções puras e evitar efeitos colaterais
 
                       ->Minimizar a colateralidade separando funções puras da
@@ -81,25 +80,12 @@ let rec ComputandoOperações operação =
 
                       ->Assim fica mais fácil identificar bugs e testar o código
                         "Se ocorrer um erro, o problema quase nunca está
-                        na função pura"
-
-                        Então, respeitando os princípios funcionais da programação,
-                        Dividimos o while abaixo em duas ou três partes separadas
-                       *)
-                        //Lendo o input do usuário e retornando um float option
-                        //ou nada, caso a conversão falhe
-
-                    
-                        
-                        //Função recursiva que pede um número até que o usuário 
-                        //digite um valor válido
+                        na função pura"   
+                    *) 
+                        //Função recursiva que pede um número até que o usuário digite um valor válido
                       let rec pedirNúmero () =
-
-                          Console.WriteLine("Por favor, digite um Número!: ")
-
                           let input = Console.ReadLine()
-
-                          match tryParseInt input with
+                          match tryParseInt input with       //Tratando entrada incorreta funcional:
                           | Some value -> quantidade <-value
                           | None -> printf "Por favor, digite um número válido: "
                                     pedirNúmero ()
@@ -140,11 +126,10 @@ let rec ComputandoOperações operação =
 
                       let EscrevaOsconjuntos conjunto =
 
-                          let agrupeSeqElementos =
-                              conjunto|> Seq.map string|> String.concat ", "
-
-                              printfn$"{nomes.[i]}= {{{agrupeSeqElementos conjunto}}}"
-                          printfn ""
+                          let agrupeSeqElementos = conjunto|> Seq.map string|> String.concat ", "
+                          
+                          printfn$"{conjunto} = {{{agrupeSeqElementos}}}"
+                      printfn ""
         
                       for i = 0 to quantidade - 1 do
 
@@ -154,19 +139,22 @@ let rec ComputandoOperações operação =
                       let U (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
                           let resultado = HashSet<double>(A)
                           resultado.UnionWith(B)
-                      resultado
+                          resultado
+
+                      let AUB = U A B
+                      //Depois é só tentar fazer "let união = A 'U' B"..Tem que dar certo!
 
                       //Definindo a função I que processa a interseção de dois conjuntos dados como parâmetros
                       let I (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
                           let resultado = HashSet<double>(A)
                           resultado.IntersectWith(B)
-                      resultado
+                          resultado
 
                       //Definindo a função D que processa a diferença de dois conjuntos dados como parâmetros
-                      let D (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
+                      let (-) (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
                           let resultado = HashSet<double>(A)
                           resultado.ExceptWith(B)
-                      resultado
+                          resultado
 
                       //Definindo a função pertence que verifica se um elemento n pertence ao conjunto A ou não
                       let pertence (A: HashSet<double>) (n: int): bool =

@@ -371,14 +371,17 @@ let rec ComputandoOperações operação =
 
                       printfn""       
     
-    | "Multiplicação" -> printfn "Você escolheu Multiplicação!" //Copiar e colar o código da Adição acima. Trocar apenas a operação
+    | "Multiplicação"        -> printfn "Você escolheu Multiplicação!" //Copiar e colar o código da Adição acima. Trocar apenas a operação
 
                       
-    | "Divisão" -> printfn "Você escolheu \"Divisão\"!"
-    | "Exponenciação" -> printfn "Você escolheu \"Exponenciação\"!"
-    | "Raiz quadrada" -> printfn"VocE escolheu \"Raiz quadrada \"!"
-    | "Fatorial" -> printfn"Você escolheu \"Fatorial\"!"
-    | "Fibonacci" ->printfn"Você escolheu \"Fibonatti\"!"
+    | "Divisão"              -> printfn "Você escolheu \"Divisão\"!"
+    | "Exponenciação"        -> printfn "Você escolheu \"Exponenciação\"!"
+    | "Raiz quadrada"        -> printfn"VocE escolheu \"Raiz quadrada \"!"
+    | "Fatorial"             -> printfn"Você escolheu \"Fatorial\"!"
+    | "Fibonacci"            ->printfn"Você escolheu \"Fibonatti\"!"
+    |"Q"|"q"                 -> Environment.Exit(0)
+    |_                       -> failwith "Entrada inválida. Tente novamente." 
+                                      ComputandoOperações operação
 
 EscolhendoOperações ()
 ComputandoOperações operação

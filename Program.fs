@@ -1,6 +1,6 @@
 ﻿// Minha primeira calculadora em F# com 14 operações diferentes
 //Autor: Allan Mattos
-//Data: 21/09/2025
+//Data: 21/09/2025 (Comecei em janeiro de 2025 mas só fiz push agora em setembro)
 //Estamos em obras
 //Transformando todos os loops em recursividade
 //Amém!
@@ -10,6 +10,7 @@
 //2) git push origin master 
 
 open System
+open System.IO
 open System.Collections.Generic
 open ClosedXML.Excel
 
@@ -17,7 +18,7 @@ Console.WriteLine("CALCULADORA")
 
 printfn ""
 
-printfn "(Pressione \"q\" para sair!)"
+printfn "-------(Pressione \"q\" para sair!)-------"
 
 //Função que trata entradas de inteiros incorretas
 let tryParseInt (input: string) =
@@ -36,7 +37,8 @@ let rec EscolhendoOperações () =
 
     printfn ""
     printfn "Com qual operação você quer trabalhar?:  "
-    printfn "C) Conjuntos |  A) Adição de grandes volumes| S) Subtração | M) Multiplicação de grandes volumes | D) Divisão | E) Exponenciação | \nR) Raiz quadrada | !) Fatorial! | F) Fibonacci | q) Sair: "
+    printfn "C) Conjuntos | A) Adição de grandes volumes | S) Subtração | M) Multiplicação de grandes volumes | D) Divisão | E) Exponenciação |
+    \nR) Raiz quadrada | !) Fatorial! | F) Fibonacci | q) Sair: "
 
     let entrada1: option<string> =
         match Console.ReadLine() with
@@ -44,8 +46,7 @@ let rec EscolhendoOperações () =
         | valor -> Some valor
      
     match entrada1 with
-    | None -> 
-                    failwith "Digite uma entrada válida!: "
+    | None ->       failwith "Digite uma entrada válida!:"
                     EscolhendoOperações ()
 
     | Some valor ->
@@ -138,55 +139,69 @@ let rec ComputandoOperações operação =
 
                       EscrevaOconjunto mapa.[nomes.[i]]
 
+
+                      //Definindo a função apa (pertence) que verifica se um elemento a pertence ao conjunto A 
+                      let apA (a: double) (A: HashSet<double>) : bool =
+                           if A.Contains (a) then
+                               true
+                           else
+                               false
+
                       //Definindo a função AUB que processa a união de dois conjuntos dados como parâmetros
                       let AUB (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
                           let união= HashSet<double>(A)
                           união.UnionWith(B)
                           união
 
-                      //Definindo a função I que processa a interseção de dois conjuntos dados como parâmetros
-                      let I (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
-                          let AIB = HashSet<double>(A)
-                          AIB.IntersectWith(B)
-                          AIB
+                      //Definindo a função AIB que processa a interseção de dois conjuntos dados como parâmetros
+                      let AIB (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
+                          let interseção = HashSet<double>(A)
+                          interseção.IntersectWith(B)
+                          interseção
 
-                      //Definindo a função D que processa a diferença de dois conjuntos dados como parâmetros
-                      let D (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
-                          let ADB = HashSet<double>(A)
-                          ADB.ExceptWith(B)
-                          ADB
+                      //Definindo a função AdifB (A-B) que processa a diferença de dois conjuntos dados como parâmetros
+                      let AdifB (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
+                          let diferença = HashSet<double>(A)
+                          diferença.ExceptWith(B)
+                          diferença
 
-                      //Definindo a função C que processa o complementar de um conjunto A em relação ao universo Uni
-                      let C (A: HashSet<double>) (Uni: HashSet<double>) : HashSet<double> =
-                          let A' = HashSet<double>(Uni)
-                          A'.ExceptWith(A)
-                          A'
-
-                      //Vamos transformar uma planilha Excel em uma matriz(para depois converter em HashSet):
-                      //open ClosedXML.Excel
+                      //Definindo a função A_, que processa o complementar de um conjunto A em relação ao universo Uni
+                      let A_ (A: HashSet<double>) (Uni: HashSet<double>) : HashSet<double> =
+                          let Acomplementar = HashSet<double>(Uni)
+                          Acomplementar.ExceptWith(A)
+                          Acomplementar
+                      
+                      (*
+                        Agora, como essas funções se comportam com um grande volume de dados?
+                        Vamos transformar uma planilha Excel(Com mil ou 2mil valores) em uma matriz
+                       (para depois a convertermos em um conjunto HashSet):
+                        open ClosedXML.Excel
+                      *)
                       //#r "nuget: ClosedXML"
 
-                      let mutable Matrix : int[,] option = None 
+                      let PlanilhaParaMatriz (caminho: string) : double[,] =
+                         if not (File.Exists(caminho)) then
+                             failwithf "Arquivo não encontrado: %s" caminho
+                         let planilha = new XLWorkbook(caminho)
+                         let aba = planilha.Worksheet(1)
 
-                      let PlanilhaParaMatriz (caminho: string) : int[,] =
-                          let planilha = new XLWorkbook("naturais.xlsx")
-                          let aba = planilha.Worksheet(1)  // primeira aba
+                         let ultimaLinha = aba.LastRowUsed().RowNumber()
+                         let ultimaColuna = aba.LastColumnUsed().ColumnNumber()
 
-                          let ultimaLinha = aba.LastRowUsed().RowNumber()
-                          let ultimaColuna = aba.LastColumnUsed().ColumnNumber()
+                         Array2D.init ultimaLinha ultimaColuna (fun linha coluna ->
+                             aba.Cell(linha + 1, coluna + 1).GetValue<double>()
+                         )
+                      let caminhoN = Path.Combine(__SOURCE_DIRECTORY__, "naturais.xlsx")
+                      let caminhoP = Path.Combine(__SOURCE_DIRECTORY__, "pares.xlsx")
 
-                          Matrix <- Some(Array2D.create ultimaLinha ultimaColuna 0) 
+                      let matriznaturais = PlanilhaParaMatriz caminhoN
+                      let matrizpares = PlanilhaParaMatriz caminhoP
 
-                          for linha in 1 .. ultimaLinha do
-                              for coluna in 1 .. ultimaColuna do
-                                  let valor = aba.Cell(linha, coluna).GetValue<int>()
-                                  Matrix.Value.[linha - 1, coluna - 1] <- valor
-
-                          Matrix.Value  
-
+                      printfn "Caminho usado: %s" caminhoN
                       
 
-                      let matrizParaHashSet (matriz: int[,]) : HashSet<int> =
+
+                      let matrizParaHashSet (matriz: double[,]) : HashSet<double> =
                           let linhas = Array2D.length1 matriz
                           let colunas = Array2D.length2 matriz
 
@@ -197,26 +212,15 @@ let rec ComputandoOperações operação =
                                           yield matriz.[i, j]
                               }
 
-                          HashSet<int>(elementos)
+                          HashSet<double>(elementos)
 
 
-                      let CJ1 = matrizParaHashSet Matrix.Value 
-                      //let CJ2...
+                      let HSN = matrizParaHashSet matriznaturais
+                      let HSP = matrizParaHashSet matrizpares
+                      
 
-                      //let união = U CJ1 CJ2
-                      //printfn $"A união dos conjuntos é: {EscrevaOconjunto união}"
-
-
-
-                    //Função para ler um arquivo com até milhares de elementos e converter seu conteúdo em 1 HashSet:
-                    //  let arquivoParaHashSet (caminho: string) : HashSet<int> =
-                     //     let linhas = File.ReadAllLines(caminho) // Comentei pois File. só lê uma linha contendo um único valor e depois pula para a próxima
-                     //     let numeros = linhas |> Array.map int
-                     //     HashSet<int>(numeros)
-
-                    // Exemplo de uso
-                      let conjunto1 = arquivoParaHashSet "naturais.xlsx"
-                      let conjunto2 = arquivoParaHashSet "pares.xlsx"
+                      let união = AUB HSN HSP
+                     // printfn $"A união dos conjuntos é: {EscrevaOconjunto união}"
 
                       //Função para converter HashSet em lista:
                       
@@ -255,14 +259,7 @@ let rec ComputandoOperações operação =
                               // 3. Concatena os subconjuntos sem 'head' e os subconjuntos com 'head'
                               subSetsOfTail @ subSetsWithHead
 
-                      
-
-                      //Definindo a função pertence que verifica se um elemento n pertence ao conjunto A ou não
-                      let pertence (A: HashSet<double>) (n: double): bool =
-                           if A.Contains (n) then
-                               true
-                           else
-                               false
+         
 
                       //Função recursiva de escolha entre várias operações de conjuntos diferentes
                       let rec OperaçõesDeConjuntos()=
@@ -288,12 +285,12 @@ let rec ComputandoOperações operação =
 
                           |"I"|"i" -> 
                                       for i = 0 to quantidade - 2 do
-                                      let inter = I (conjunto.[i]) (conjunto.[i+1])
+                                      let inter = AIB (conjunto.[i]) (conjunto.[i+1])
                                       printfn $"A interseção dos conjuntos é: {EscrevaOconjunto inter}"
 
                           |"D"|"d" ->                      
                                       for i = 0 to quantidade - 2 do
-                                      let diferença = D (conjunto.[i]) (conjunto.[i+1])
+                                      let diferença = AdifB (conjunto.[i]) (conjunto.[i+1])
                                       printfn $"A diferença dos conjuntos é: {EscrevaOconjunto diferença}"
 
                           |"P"|"p" -> printf "Para qual conjunto você quer testar pertinência? Digite a letra do conjunto: "
@@ -309,7 +306,7 @@ let rec ComputandoOperações operação =
                      
                                       if mapa.ContainsKey(letraDoconjunto) then
                                           
-                                          if pertence mapa.[letraDoconjunto] elemento then
+                                          if apA elemento mapa.[letraDoconjunto] then
                                              printfn $"O elemento {elemento} pertence a {letraDoconjunto} de fato, pois {letraDoconjunto} = {{{conjuntoFormatado}}}"       
                                           else
                                           printfn $"O elemento {elemento} NÃO pertence a {letraDoconjunto}, pois {letraDoconjunto} = {{{conjuntoFormatado}}}"
@@ -323,7 +320,7 @@ let rec ComputandoOperações operação =
 
                       printfn ""
 
-        //Permitir o usuário fazer, por exemplo,( A U B inter C) dif D 
+        //Permitir o usuário fazer, por exemplo,( A U B inter C) dif D //Vou fazer uma calculadora de conjuntos a parte
                
     | "Adição" ->     printfn"Você escolheu \"Adição\""  
                       printf "Digite os valores a serem somados com espaços entre eles: "

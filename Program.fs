@@ -72,21 +72,9 @@ let rec ComputandoOperações operação =
                       
                       printf "Com quantos conjuntos você quer trabalhar?: "
 
-                      
-
                       printfn ""
 
-                    (*
-                      ->Sempre buscar funções puras e evitar efeitos colaterais
-
-                      ->Minimizar a colateralidade separando funções puras da
-                        entrada do usuário e da saída para o console
-
-                      ->Assim fica mais fácil identificar bugs e testar o código
-                        "Se ocorrer um erro, o problema quase nunca está
-                        na função pura"   
-                    *) 
-                        //Função recursiva que pede um número até que o usuário digite um valor válido
+                  
                       let rec pedirNúmero () =
                           let input = Console.ReadLine()
                           match tryParseInt input with       //Tratando entrada incorreta funcional:
@@ -94,16 +82,6 @@ let rec ComputandoOperações operação =
                           | None -> printf "Por favor, digite um número válido: "
                                     pedirNúmero ()
                       printfn""
-                      
-                     (*Tratando entrada incorreta imperativa e Csharpiana
-                      while not (double.TryParse(entrada, &quantidade)) do 
-
-                          Console.WriteLine("Por favor, digite um Número!: ")
-     
-                          entrada <- Console.ReadLine()
-
-                          Console.WriteLine()
-                      *)
 
                       let mutable conjunto : HashSet<double>[] = Array.init quantidade (fun _-> HashSet<double>())
                       let nomes = [|"A";"B";"C";"D";"E";"F";"G";"H";"I";"J";"K";"L";"M";"N"|]

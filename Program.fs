@@ -36,7 +36,7 @@ let mutable quantidade : int = 0
 let rec EscolhendoOperações () =
 
     printfn ""
-    printfn "Com qual operação você quer trabalhar?:  "
+    printfn "Com o quê você quer trabalhar?:  "
     printfn "C) Conjuntos | A) Adição de grandes volumes | S) Subtração | M) Multiplicação de grandes volumes | D) Divisão | E) Exponenciação |
     \nR) Raiz quadrada | !) Fatorial! | F) Fibonacci | q) Sair: "
 
@@ -267,56 +267,66 @@ let rec ComputandoOperações operação =
                           printfn "O que você quer calcular?"
                           printfn "P)Pertence| U)União| I)Intersecção| C)Complementar| D)Diferença| E) Conjunto Das Partes | q)Sair"
                           printfn "Digite a letra inicial da operação que deseja efetuar: "
-                          entrada <- Console.ReadLine()
+                          
+                          let entrada2 : option<string> =
+                              match Console.ReadLine() with
+                              | null -> None
+                              | valor -> Some valor
 
-                          match entrada with
-                          |null    -> failwith "Entrada nula! Digite uma entrada válida!"
+                        
+
+                          match entrada2 with
+                          |None   -> failwith "Entrada nula! Digite uma entrada válida!"
                                       OperaçõesDeConjuntos ()
+                          |Some valor -> 
+                                         match valor with                      
+                                      
 
-                          |"U"|"u" -> 
-                                      for i = 0 to quantidade - 2 do
-                                      let união = U (conjunto.[i]) (conjunto.[i+1])
-                                      printfn $"A união dos conjuntos é: {EscrevaOconjunto união}"
-                                      //Deseja fazer outra operação com os mesmos conjuntos?(s/n)
-                                      //entrada <- Console.ReadLine()
-                                      //match entrada with
-                                      //|"S"|"s" -> OperaçõesDeConjuntos
-                                      //|"N"|"n" -> printfn "Ok"
+                                         |"Q"|"q" -> Environment.Exit(0)
+                                         |"U"|"u" -> 
+                                                    for i = 0 to quantidade - 2 do
+                                                        let união = AUB (conjunto.[i]) (conjunto.[i+1])
+                                                        printfn $"A união dos conjuntos é: {EscrevaOconjunto união}"
+                                                      (*Deseja fazer outra operação com os mesmos conjuntos?(s/n)
+                                                        entrada <- Console.ReadLine()
+                                                         match entrada with
+                                                       |"S"|"s" -> OperaçõesDeConjuntos
+                                      |"N"|"n" -> printfn "Ok" *)
 
-                          |"I"|"i" -> 
-                                      for i = 0 to quantidade - 2 do
-                                      let inter = AIB (conjunto.[i]) (conjunto.[i+1])
-                                      printfn $"A interseção dos conjuntos é: {EscrevaOconjunto inter}"
+                                         |"I"|"i" -> 
+                                                     for i = 0 to quantidade - 2 do
+                                                     let inter = AIB (conjunto.[i]) (conjunto.[i+1])
+                                                     printfn $"A interseção dos conjuntos é: {EscrevaOconjunto inter}"
 
-                          |"D"|"d" ->                      
-                                      for i = 0 to quantidade - 2 do
-                                      let diferença = AdifB (conjunto.[i]) (conjunto.[i+1])
-                                      printfn $"A diferença dos conjuntos é: {EscrevaOconjunto diferença}"
+                                         |"D"|"d" ->                      
+                                                     for i = 0 to quantidade - 2 do
+                                                     let diferença = AdifB (conjunto.[i]) (conjunto.[i+1])
+                                                     printfn $"A diferença dos conjuntos é: {EscrevaOconjunto diferença}"
 
-                          |"P"|"p" -> printf "Para qual conjunto você quer testar pertinência? Digite a letra do conjunto: "
-                                      entrada <- Console.ReadLine ()
+                                         |"P"|"p" -> printf "Para qual conjunto você quer testar pertinência? Digite a letra do conjunto: "
+                                                     entrada <- Console.ReadLine ()
                      
-                                      let letraDoconjunto = entrada
+                                                     let letraDoconjunto = entrada
 
-                                      printf "Agora, qual elemento você quer saber se pertence a %s?: " letraDoconjunto
-                                      entrada <- Console.ReadLine ()
+                                                     printf "Agora, qual elemento você quer saber se pertence a %s?: " letraDoconjunto
+                                                     entrada <- Console.ReadLine ()
                      
-                                      let elemento = (double)entrada
-                                      let conjuntoFormatado =  mapa.[letraDoconjunto] |> Seq.toList |> List.map string |> String.concat ", "
+                                                     let elemento = (double)entrada
+                                                     let conjuntoFormatado =  mapa.[letraDoconjunto] |> Seq.toList |> List.map string |> String.concat ", "
                      
-                                      if mapa.ContainsKey(letraDoconjunto) then
+                                                     if mapa.ContainsKey(letraDoconjunto) then
                                           
-                                          if apA elemento mapa.[letraDoconjunto] then
-                                             printfn $"O elemento {elemento} pertence a {letraDoconjunto} de fato, pois {letraDoconjunto} = {{{conjuntoFormatado}}}"       
-                                          else
-                                          printfn $"O elemento {elemento} NÃO pertence a {letraDoconjunto}, pois {letraDoconjunto} = {{{conjuntoFormatado}}}"
-                                      else
-                                      printfn $"O conjunto {conjunto} não existe no mapa"
+                                                         if apA elemento mapa.[letraDoconjunto] then
+                                                             printfn $"O elemento {elemento} pertence a {letraDoconjunto} de fato, pois {letraDoconjunto} = {{{conjuntoFormatado}}}"       
+                                                         else
+                                                             printfn $"O elemento {elemento} NÃO pertence a {letraDoconjunto}, pois {letraDoconjunto} = {{{conjuntoFormatado}}}"
+                                                     else
+                                                         printfn $"O conjunto {conjunto} não existe no mapa"
 
-                          |"Q"|"q" -> Environment.Exit(0)
+                          
 
-                          |_       -> failwith "Entrada inválida. Tente novamente." 
-                                      OperaçõesDeConjuntos ()
+                                         |_       -> failwith "Entrada inválida. Tente novamente." 
+                                                     OperaçõesDeConjuntos ()
 
                       printfn ""
 

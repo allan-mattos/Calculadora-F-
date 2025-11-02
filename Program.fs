@@ -347,31 +347,34 @@ let rec ComputandoOperações operação =
 
                       entrada <- Console.ReadLine ()
 
-                      let valoresEntrada = string entrada
+                      let StringEntrada = string entrada
                       let separadores = [| ' '; ';'; ':' |]
-        
-                      let valoresSeparados = valoresEntrada.Split(separadores, StringSplitOptions.RemoveEmptyEntries)
-
-                      let floatArray = Array.map (float) valoresSeparados
-                      let soma = Array.sum floatArray
-
-                      let valoresString = Array.map(string)floatArray
-
+                      let StringArrayValSeparados = StringEntrada.Split(separadores, StringSplitOptions.RemoveEmptyEntries)
+                      let EntradaParaFloatArray = Array.map (float) StringArrayValSeparados
+                      let soma = Array.sum EntradaParaFloatArray
                       let somaString = (string)soma
-
-                      let textoConcatenado = String.concat ", " valoresString
+                      let textoConcatenado = String.concat ", " StringArrayValSeparados // Embora Split forme um array com separadores, para imprimirmos no Console necessitamos concatenar com ,
                   
-                      printf $"O(s) valor(es) "
-                      
+                      printf $"O(s) valor(es) "   
                       printfn "%s" textoConcatenado
-
-                      printfn "gera(m) o somatório de: %s" somaString 
+                      printfn "Gera(m) o somatório de: %s" somaString // Não gosto de trabalhar com valores numéricos na saída
 
                       printfn"Deseja efetuar mais uma adição? (s\n)"
               
                       let rec maisUmaadição () =
                           entrada <- Console.ReadLine ()
                           match entrada with
+                          |"Q"|"q" -> printfn"Tem certeza que deseja sair? (S/N): "
+                                      let rec theEnd () = 
+                                          
+                                          entrada <- Console.ReadLine()
+                                          if entrada ="S" || entrada ="s" then
+                                              Environment.Exit(0)
+                                          elif entrada = "N" || entrada = "n" then
+                                              printfn"Ok"
+                                          else failwith "Entrada inesperada! Digite novamente (S/N): "
+                                               theEnd ()
+                                      printfn ""
                           |"S"|"s" -> ComputandoOperações operação
                           |"N"|"n" -> printfn "Ok"
                           |"Q"|"q" -> printfn"Tem certeza que deseja sair? (S/N): "

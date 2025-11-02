@@ -72,11 +72,9 @@ let rec ComputandoOperações operação =
                       
                       printf "Com quantos conjuntos você quer trabalhar?: "
 
-                      printfn ""
-
                   
                       let rec pedirNúmero () =
-                          let input = Console.ReadLine()
+                          let input  = Console.ReadLine()
                           match tryParseInt input with       //Tratando entrada incorreta funcional:
                           | Some value -> quantidade <-value
                           | None -> printf "Por favor, digite um número válido: "
@@ -87,12 +85,14 @@ let rec ComputandoOperações operação =
                       let nomes = [|"A";"B";"C";"D";"E";"F";"G";"H";"I";"J";"K";"L";"M";"N"|]
                       let mapa = Dictionary<string, HashSet<double>>()
 
+                      //Esse loop provavelmente vai virar uma função recursiva porém os foreach de uma linha acredito que não há porque mudar, a não ser
+                      //que encontre algo que funcione mais rápido. Tem coisa que seja mais rápido que um foreach de uma linha?
                       for i = 0 to quantidade - 1 do
                           let nome =  if i < nomes.Length  then nomes.[i] else $"Conjunto{i+1}"
                           mapa.Add(nome, conjunto.[i])
 
                           printfn $"Adicione os elementos de seu conjunto {nome}, separados por espaços ou ponto e vírgula ou dois pontos: "
-                          printf "%s = { " (nome)
+                          printf "%s = { " nome
                           entrada <- Console.ReadLine() 
                           printf " }"
                       
@@ -118,7 +118,7 @@ let rec ComputandoOperações operação =
                       EscrevaOconjunto mapa.[nomes.[i]]
 
 
-                      //Definindo a função apa (pertence) que verifica se um elemento a pertence ao conjunto A 
+                      //Definindo a função apA (pertence) que verifica se um elemento a pertence ao conjunto A 
                       let apA (a: double) (A: HashSet<double>) : bool =
                            if A.Contains (a) then
                                true
@@ -127,11 +127,11 @@ let rec ComputandoOperações operação =
 
                       //Definindo a função AUB que processa a união de dois conjuntos dados como parâmetros
                       let AUB (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
-                          let união= HashSet<double>(A)
+                          let união = HashSet<double>(A)
                           união.UnionWith(B)
                           união
 
-                      //Definindo a função AIB que processa a interseção de dois conjuntos dados como parâmetros
+                      //Definindo a função AIB que processa a intersecção de dois conjuntos dados como parâmetros
                       let AIB (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
                           let interseção = HashSet<double>(A)
                           interseção.IntersectWith(B)
@@ -157,6 +157,7 @@ let rec ComputandoOperações operação =
                       *)
                       //#r "nuget: ClosedXML"
 
+                      //Função que converte uma planilha Excel (passando seu caminho como parâmetro) em uma matriz 2D do tipo double
                       let PlanilhaParaMatriz (caminho: string) : double[,] =
                          if not (File.Exists(caminho)) then
                              failwithf "Arquivo não encontrado: %s" caminho
@@ -169,6 +170,8 @@ let rec ComputandoOperações operação =
                          Array2D.init ultimaLinha ultimaColuna (fun linha coluna ->
                              aba.Cell(linha + 1, coluna + 1).GetValue<double>()
                          )
+
+                    // Definindo os caminhos das planilhas Excel
                       let caminhoN = Path.Combine(__SOURCE_DIRECTORY__, "naturais.xlsx")
                       let caminhoP = Path.Combine(__SOURCE_DIRECTORY__, "pares.xlsx")
 
@@ -178,7 +181,7 @@ let rec ComputandoOperações operação =
                       printfn "Caminho usado: %s" caminhoN
                       
 
-
+                      //Função que converte uma matriz 2D em um conjunto HashSet
                       let matrizParaHashSet (matriz: double[,]) : HashSet<double> =
                           let linhas = Array2D.length1 matriz
                           let colunas = Array2D.length2 matriz
@@ -197,10 +200,20 @@ let rec ComputandoOperações operação =
                       let HSP = matrizParaHashSet matrizpares
                       
 
-                      let união = AUB HSN HSP
-                     // printfn $"A união dos conjuntos é: {EscrevaOconjunto união}"
-
-                      //Função para converter HashSet em lista:
+                      let NUP = AUB HSN HSP
+                      printfn $"A união do conjunto dos naturais até mil com o conjunto dos números pares até dois mil é: {EscrevaOconjunto NUP}"
+                      printfn ""
+                      let NIP = AIB HSN HSP
+                      printfn $"A interseção do conjunto dos naturais até mil, com o conjunto dos números pares até 2000 é: {EscrevaOconjunto NIP}"
+                      printfn ""
+                      let NdifP = AdifB HSN HSP
+                      printfn $"O conjunto dos naturais até mil, menos o conjunto dos números pares até 2000 é: {EscrevaOconjunto NdifP}"
+                      printfn ""
+                      let HSP_ = A_ HSP HSN
+                      printfn $"O complementar dos números pares até dois mil em relação ao conjunto dos números naturais até mil é: {EscrevaOconjunto HSP_}"
+                     
+                     
+                     //Função para converter HashSet em lista:
                       
                       let HSToList (A: HashSet<'T>) : 'T list =
                           let Tolist = A |> Seq.toList
@@ -242,7 +255,7 @@ let rec ComputandoOperações operação =
                       //Função recursiva de escolha entre várias operações de conjuntos diferentes
                       let rec OperaçõesDeConjuntos()=
                           printfn "" 
-                          printfn "O que você quer calcular?"
+                          printfn "Que operação você quer calcular com os seus conjuntos?"
                           printfn "P)Pertence| U)União| I)Intersecção| C)Complementar| D)Diferença| E) Conjunto Das Partes | q)Sair"
                           printfn "Digite a letra inicial da operação que deseja efetuar: "
                           
@@ -251,15 +264,12 @@ let rec ComputandoOperações operação =
                               | null -> None
                               | valor -> Some valor
 
-                        
-
                           match entrada2 with
                           |None   -> failwith "Entrada nula! Digite uma entrada válida!"
                                       OperaçõesDeConjuntos ()
                           |Some valor -> 
-                                         match valor with                      
-                                      
 
+                                         match valor with                     
                                          |"Q"|"q" -> Environment.Exit(0)
                                          |"U"|"u" -> 
                                                     for i = 0 to quantidade - 2 do

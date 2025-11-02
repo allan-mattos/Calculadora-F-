@@ -270,29 +270,29 @@ let rec ComputandoOperações operação =
                           |Some valor -> 
 
                                          match valor with                     
-                                         |"Q"|"q" -> Environment.Exit(0)
-                                         |"U"|"u" ->
-                                                    let mutable união = HashSet<double>()
-                                                    for i = 0 to quantidade - 2 do
-                                                        união <- AUB (conjunto.[i]) (conjunto.[i+1])
-                                                        
-                                                    printfn $"A união dos conjuntos é: {EscrevaOconjunto união}"
+                                         |"Q"|"q" -> 
+                                                     Environment.Exit(0)
 
-                                                    
+                                         |"U"|"u" ->
+                                                     let mutable união = HashSet<double>()
+                                                     for i = 0 to quantidade - 2 do
+                                                         união <- AUB (conjunto.[i]) (conjunto.[i+1])
+                                                     printfn $"A união dos conjuntos é: {EscrevaOconjunto união}" 
 
                                          |"I"|"i" -> 
+                                                     let mutable intersecção = HashSet<double>()
                                                      for i = 0 to quantidade - 2 do
-                                                     let inter = AIB (conjunto.[i]) (conjunto.[i+1])
-                                                     printfn $"A interseção dos conjuntos é: {EscrevaOconjunto inter}"
+                                                         intersecção <- AIB (conjunto.[i]) (conjunto.[i+1])
+                                                     printfn $"A interseção dos conjuntos é: {EscrevaOconjunto intersecção}"
 
-                                         |"D"|"d" ->                      
+                                         |"D"|"d" -> 
+                                                     let mutable diferença = HashSet<double>()
                                                      for i = 0 to quantidade - 2 do
-                                                     let diferença = AdifB (conjunto.[i]) (conjunto.[i+1])
+                                                         diferença <- AdifB (conjunto.[i]) (conjunto.[i+1])
                                                      printfn $"A diferença dos conjuntos é: {EscrevaOconjunto diferença}"
 
                                          |"P"|"p" -> printf "Para qual conjunto você quer testar pertinência? Digite a letra do conjunto: "
                                                      entrada <- Console.ReadLine ()
-                     
                                                      let letraDoconjunto = entrada
 
                                                      printf "Agora, qual elemento você quer saber se pertence a %s?: " letraDoconjunto

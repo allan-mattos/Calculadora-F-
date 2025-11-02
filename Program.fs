@@ -271,15 +271,14 @@ let rec ComputandoOperações operação =
 
                                          match valor with                     
                                          |"Q"|"q" -> Environment.Exit(0)
-                                         |"U"|"u" -> 
+                                         |"U"|"u" ->
+                                                    let mutable união = HashSet<double>()
                                                     for i = 0 to quantidade - 2 do
-                                                        let união = AUB (conjunto.[i]) (conjunto.[i+1])
-                                                        printfn $"A união dos conjuntos é: {EscrevaOconjunto união}"
-                                                      (*Deseja fazer outra operação com os mesmos conjuntos?(s/n)
-                                                        entrada <- Console.ReadLine()
-                                                         match entrada with
-                                                       |"S"|"s" -> OperaçõesDeConjuntos
-                                      |"N"|"n" -> printfn "Ok" *)
+                                                        união <- AUB (conjunto.[i]) (conjunto.[i+1])
+                                                        
+                                                    printfn $"A união dos conjuntos é: {EscrevaOconjunto união}"
+
+                                                    
 
                                          |"I"|"i" -> 
                                                      for i = 0 to quantidade - 2 do
@@ -316,9 +315,32 @@ let rec ComputandoOperações operação =
                                          |_       -> failwith "Entrada inválida. Tente novamente." 
                                                      OperaçõesDeConjuntos ()
 
+                          
+                          let rec outraOp () =
+                              printfn "Deseja fazer outra operação com os mesmos conjuntos?(S/N)"
+                              let entrada3 : option<string> =
+                                  match Console.ReadLine() with
+                                  | null -> None
+                                  | valor -> Some valor
+
+                              match entrada3 with
+                              |None   -> failwith "Entrada nula! Digite uma entrada válida!"
+                                         outraOp ()
+                              |Some valor -> 
+
+                                             match valor with
+                                             |"Q"|"q" -> Environment.Exit(0)
+                                             |"N"|"n" -> printfn "Ok"
+                                             |"S"|"s" -> OperaçõesDeConjuntos ()
+                                             |_       -> failwith "Entrada inesperada! Digite novamente: "
+                                                            outraOp ()
+                          printfn""
+
                       printfn ""
 
         //Permitir o usuário fazer, por exemplo,( A U B inter C) dif D //Vou fazer uma calculadora de conjuntos a parte
+        //Permitir ao usuário passar conjuntos de forma sequencial através do Console, ex: {1..10..100}
+        //Repassar para o usuário todo o poder do F#
                
     | "Adição" ->     printfn"Você escolheu \"Adição\""  
                       printf "Digite os valores a serem somados com espaços entre eles: "

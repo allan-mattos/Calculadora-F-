@@ -1,6 +1,6 @@
 ﻿// Minha primeira calculadora em F# com 14 operações diferentes
 //Autor: Allan Mattos
-//Data: 21/09/2025 (Comecei em janeiro de 2025 mas só fiz push agora em setembro)
+//Data: 21/09/2025 
 //Estamos em obras
 //Transformando todos os loops em recursividade
 //Amém!
@@ -13,6 +13,7 @@ open System
 open System.IO
 open System.Collections.Generic
 open ClosedXML.Excel
+open MathLibrary
 
 Console.WriteLine("CALCULADORA")
 
@@ -21,11 +22,12 @@ printfn ""
 printfn "-------(Pressione \"q\" para sair!)-------"
 
 //Função que trata entradas de inteiros incorretas
-let tryParseInt (input: string) =
+let ``éInt?`` (input: string) =
 
     match Int32.TryParse(input) with
     | (true, value) -> Some value
     | (false, _) -> None
+
 
 let mutable entrada = ""
 
@@ -70,36 +72,56 @@ let rec ComputandoOperações operação =
     match operação with
     | "Conjuntos" ->  printfn"Você escolheu Conjuntos!"
                       
-                      printf "Com quantos conjuntos você quer trabalhar?: "
+                      printf "Com quantos conjuntos você quer trabalhar?: "      
 
-                  
-                      let rec pedirNúmero () =
-                          let input  = Console.ReadLine()
-                          match tryParseInt input with       //Tratando entrada incorreta funcional:
-                          | Some value -> quantidade <-value
-                          | None -> printf "Por favor, digite um número válido: "
-                                    pedirNúmero ()
-                      printfn""
+                      let tryParseInt (s: string) =
+                          match Int32.TryParse(s) with
+                          | (true, value) -> Some value
+                          | (false, _) -> None
+
+                      let rec pedirNumero () =
+                          printf "Com quantos conjuntos você quer trabalhar?: "
+                          let input = Console.ReadLine()
+                          match tryParseInt input with
+                          | Some value -> quantidade <- value
+                          | None       ->
+                                          printfn "Por favor, digite um número válido."
+                                          pedirNumero ()
+
+
+                      printfn "Quantidade escolhida: %d" quantidade
+
 
                       let mutable conjunto : HashSet<double>[] = Array.init quantidade (fun _-> HashSet<double>())
+
                       let nomes = [|"A";"B";"C";"D";"E";"F";"G";"H";"I";"J";"K";"L";"M";"N"|]
+
                       let mapa = Dictionary<string, HashSet<double>>()
 
                       //Esse loop provavelmente vai virar uma função recursiva porém os foreach de uma linha acredito que não há porque mudar, a não ser
                       //que encontre algo que funcione mais rápido. Tem coisa que seja mais rápido que um foreach de uma linha?
                       for i = 0 to quantidade - 1 do
                           let nome =  if i < nomes.Length  then nomes.[i] else $"Conjunto{i+1}"
+
                           mapa.Add(nome, conjunto.[i])
 
                           printfn $"Adicione os elementos de seu conjunto {nome}, separados por espaços ou ponto e vírgula ou dois pontos: "
+                          
                           printf "%s = { " nome
+                          
                           entrada <- Console.ReadLine() 
+                          
                           printf " }"
                       
+                          
                           let valoresString = string entrada
+                          
                           let separadores = [| ' '; ';'; ':' |]
+                          
                           let valoresSeparados = valoresString.Split(separadores, StringSplitOptions.RemoveEmptyEntries)
+                          
                           let valoresDouble = Array.map (double) valoresSeparados
+                          
                           conjunto.[i] <- HashSet<double>(valoresDouble)
             
                           mapa.Add(nome, conjunto.[i])
@@ -111,6 +133,7 @@ let rec ComputandoOperações operação =
                           let agrupeSeqElementos = conjunto|> Seq.map string|> String.concat ", "
                           
                           printfn$"{Cj} = {{{agrupeSeqElementos}}}"
+
                       printfn ""
         
                       for i = 0 to quantidade - 1 do
@@ -118,37 +141,36 @@ let rec ComputandoOperações operação =
                       EscrevaOconjunto mapa.[nomes.[i]]
 
 
-                      //Definindo a função apA (pertence) que verifica se um elemento a pertence ao conjunto A 
-                      let apA (a: double) (A: HashSet<double>) : bool =
-                           if A.Contains (a) then
-                               true
-                           else
-                               false
-
-                      //Definindo a função AUB que processa a união de dois conjuntos dados como parâmetros
-                      let AUB (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
-                          let união = HashSet<double>(A)
-                          união.UnionWith(B)
-                          união
-
-                      //Definindo a função AIB que processa a intersecção de dois conjuntos dados como parâmetros
-                      let AIB (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
-                          let interseção = HashSet<double>(A)
-                          interseção.IntersectWith(B)
-                          interseção
-
-                      //Definindo a função AdifB (A-B) que processa a diferença de dois conjuntos dados como parâmetros
-                      let AdifB (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
-                          let diferença = HashSet<double>(A)
-                          diferença.ExceptWith(B)
-                          diferença
-
-                      //Definindo a função A_, que processa o complementar de um conjunto A em relação ao universo Uni
-                      let A_ (A: HashSet<double>) (Uni: HashSet<double>) : HashSet<double> =
-                          let Acomplementar = HashSet<double>(Uni)
-                          Acomplementar.ExceptWith(A)
-                          Acomplementar
                       
+                      
+                      //Tentando encontrar a melhor forma de trabalhar com conjuntos numéricos em F#:
+
+
+                      let Ni = Seq.initInfinite id (*Se N,R,Z,Q são infinitos então a melhor maneira de trabalhar com eles em programação, deve ser usando
+                                                    Seq.initInfinite*)
+                      let primeiros2mil = Ni |> Seq.take 2000|> Seq.map string |> String.concat ", "
+
+                      let escrevaN = printfn $"N = {{{primeiros2mil}}}"
+
+                      let NaturaisCSV =
+                          Ni
+                          |> Seq.take 10000
+                          |> Seq.map string
+                          |> String.concat ", "
+    
+                      File.WriteAllText("naturais.csv", NaturaisCSV)
+    
+                      let N = seq {1..2..1000000000}
+                      let Npar = seq {2..4..1000000000}
+                      let Nímpar = seq {1..3..999999999}
+
+                      //Parei aqui: Tem coisa para fazer daqui para a frente!
+                      let união =  Seq.append Nímpar Npar |> Seq.distinct
+                      let AmB = N |> Seq.except Npar
+                      let AInterB = N|> Seq.filter (fun x -> Seq.contains x Npar)
+                      let númerosbons = seq {1,2,3,5,7,9,11,14,20,22,30,35,42,52,77,100}
+
+
                       (*
                         Agora, como essas funções se comportam com um grande volume de dados?
                         Vamos transformar uma planilha Excel(Com mil ou 2mil valores) em uma matriz
@@ -221,9 +243,9 @@ let rec ComputandoOperações operação =
 
                       let meuSet = HashSet<double>([1.0; 2.0; 3.0; 4.0; 5.0])
   
-                      let comoLista = HSToList meuSet       //Temos 2 opções para converter HashSet em lista
+                      let comoLista = HSToList meuSet       
                       
-                      let minhaLista = meuSet |> Seq.toList
+                      let minhaLista = meuSet |> Seq.toList // Função para converter Set em lista
 
                       //Convertendo lista em HashSet:
                       let ListToHS (lista: 'T list) : HashSet<'T> =
@@ -232,31 +254,13 @@ let rec ComputandoOperações operação =
 
                       let listaExemplo = [1.0; 2.0; 3.0; 4.0; 5.0]
                       let A = ListToHS listaExemplo
-
-
-
-                      let rec P Alist =
-                          match Alist with
-                          | [] -> [[]] // O conjunto potência de [] é [[]] (lista com a lista vazia)
-                          | head::tail ->
-                              // 1. Encontra todos os subconjuntos do restante da lista (tail)
-                              let subSetsOfTail = P tail 
-        
-                              // 2. Cria novos subconjuntos adicionando 'head' a cada um deles
-                              let subSetsWithHead = 
-                                  subSetsOfTail 
-                                  |> List.map (fun subList -> head :: subList)
-            
-                              // 3. Concatena os subconjuntos sem 'head' e os subconjuntos com 'head'
-                              subSetsOfTail @ subSetsWithHead
-
          
 
                       //Função recursiva de escolha entre várias operações de conjuntos diferentes
                       let rec OperaçõesDeConjuntos()=
                           printfn "" 
                           printfn "Que operação você quer calcular com os seus conjuntos?"
-                          printfn "P)Pertence| U)União| I)Intersecção| C)Complementar| D)Diferença| E) Conjunto Das Partes | q)Sair"
+                          printfn "P)Pertence ou não pertence (∈, ∉)| U)União (∪)| I)Intersecção (∩)| C)Complementar (C\u0304)| D)Diferença (-)| E) Conjunto Das Partes (Pa) | q) Sair"
                           printfn "Digite a letra inicial da operação que deseja efetuar: "
                           
                           let entrada2 : option<string> =
@@ -364,29 +368,19 @@ let rec ComputandoOperações operação =
                       let rec maisUmaadição () =
                           entrada <- Console.ReadLine ()
                           match entrada with
+                          |"N"|"n" -> printfn "Ok"
                           |"Q"|"q" -> printfn"Tem certeza que deseja sair? (S/N): "
                                       let rec theEnd () = 
-                                          
                                           entrada <- Console.ReadLine()
-                                          if entrada ="S" || entrada ="s" then
+                                          if entrada = "S" || entrada ="s" then
                                               Environment.Exit(0)
                                           elif entrada = "N" || entrada = "n" then
                                               printfn"Ok"
+                                              maisUmaadição ()
                                           else failwith "Entrada inesperada! Digite novamente (S/N): "
                                                theEnd ()
                                       printfn ""
                           |"S"|"s" -> ComputandoOperações operação
-                          |"N"|"n" -> printfn "Ok"
-                          |"Q"|"q" -> printfn"Tem certeza que deseja sair? (S/N): "
-                                      let rec theEnd () = 
-                                          
-                                          entrada <- Console.ReadLine()
-                                          if entrada ="S" || entrada ="s" then
-                                              Environment.Exit(0)
-                                          elif entrada = "N" || entrada = "n" then
-                                              printfn"Ok"
-                                          else failwith "Entrada inesperada! Digite novamente (S/N): "
-                                               theEnd ()
                                       printfn ""
 
                           |_ -> failwith "Entrada inesperada! Digite novamente: "

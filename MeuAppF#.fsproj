@@ -7,13 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="MathLang.fs" />
     <None Include="testePlanilha.fsx" />
     <None Include="Pares.xlsx" />
     <None Include="Naturais.xlsx" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
-  <ItemGroup />
 
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.105.0" />

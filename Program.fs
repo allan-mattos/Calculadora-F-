@@ -29,11 +29,38 @@ let ``éInt?`` (input: string) =
     | (false, _) -> None
 
 
-let mutable entrada = ""
+let mutable entrada: string option = None 
 
 let mutable operação = ""
 
 let mutable quantidade : int = 0
+
+//Acaso o usuário digite "q" para sair, temos a função theEnd:
+let rec theEnd () = 
+
+    printfn"Tem certeza que deseja sair? (S/N): "
+
+    let entrada0: option<string> =
+
+        match Console.ReadLine() with
+        | null -> None
+        | valor -> Some valor
+     
+    match entrada0 with
+    | None ->        printfn"Digite 'S' ou 'N'!"
+                     theEnd()
+
+    | Some valor ->
+                     match valor with
+                     |"N" |"n" -> 
+                                  printfn"Ok"
+                     |"S" |"s" -> 
+                                  printfn"Saindo do programa..."
+                                  Environment.Exit(0)
+                     |_       ->   printfn "Entrada inesperada! Digite novamente (S/N): "
+                                   theEnd ()
+                    
+                                              
 
 let rec EscolhendoOperações () =
 
@@ -53,7 +80,7 @@ let rec EscolhendoOperações () =
 
     | Some valor ->
                     match valor with
-                    | "Q" | "q" -> Environment.Exit(0)
+                    | "Q" | "q" -> theEnd ()
                     | "C" | "c" -> operação <- "Conjuntos"
                     | "A" | "a" -> operação <- "Adição"
                     | "S" | "s" -> operação <- "Subtração"
@@ -368,23 +395,30 @@ let rec ComputandoOperações operação =
                       let rec maisUmaadição () =
                           entrada <- Console.ReadLine ()
                           match entrada with
-                          |"N"|"n" -> printfn "Ok"
-                          |"Q"|"q" -> printfn"Tem certeza que deseja sair? (S/N): "
-                                      let rec theEnd () = 
-                                          entrada <- Console.ReadLine()
-                                          if entrada = "S" || entrada ="s" then
-                                              Environment.Exit(0)
-                                          elif entrada = "N" || entrada = "n" then
-                                              printfn"Ok"
-                                              maisUmaadição ()
-                                          else failwith "Entrada inesperada! Digite novamente (S/N): "
-                                               theEnd ()
-                                      printfn ""
-                          |"S"|"s" -> ComputandoOperações operação
-                                      printfn ""
+                          |"N"|"n" -> 
+                                        printfn "Ok"
+                          |"Q"|"q" -> 
+                                        let rec theEnd () = 
+                                            printfn"Tem certeza que deseja sair? (S/N): "
+                                            entrada <- Console.ReadLine()
+                                            entrada <- entrada.ToUpper()
+                                            if entrada = "S" then
+                                                Environment.Exit(0)
+                                            elif entrada = "N" then
+                                                printfn"Ok"
+                                              
+                                            else failwith "Entrada inesperada! Digite novamente (S/N): "
+                                                 theEnd ()
+                                      
+                                            if entrada= "N" then maisUmaadição () 
+                                        printfn""
 
-                          |_ -> failwith "Entrada inesperada! Digite novamente: "
-                                maisUmaadição ()
+                          |"S"|"s" -> 
+                                        ComputandoOperações operação
+                                        printfn ""
+
+                          |_ ->         failwith "Entrada inesperada! Digite novamente: "
+                                        maisUmaadição ()
 
                       printfn""       
     

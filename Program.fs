@@ -1,7 +1,7 @@
 ﻿// Minha primeira calculadora em F# com 14 operações diferentes
 //Autor: Allan Mattos
 //Data: 21/09/2025 
-//Estamos em obras
+//Em obras
 //Transformando todos os loops em recursividade
 //Amém!
 
@@ -15,13 +15,7 @@ open System.Collections.Generic
 open ClosedXML.Excel
 open MathLibrary
 
-Console.WriteLine("CALCULADORA")
-
-printfn ""
-
-printfn "-------(Pressione \"q\" para sair!)-------"
-
-//Função que trata entradas de inteiros incorretas
+  //Função que trata entradas de inteiros incorretas
 let ``éInt?`` (input: string) =
 
     match Int32.TryParse(input) with
@@ -29,74 +23,110 @@ let ``éInt?`` (input: string) =
     | (false, _) -> None
 
 
-let mutable entrada: string option = None 
-
+let mutable entrada = ""
 let mutable operação = ""
-
 let mutable quantidade : int = 0
 
-//Acaso o usuário digite "q" para sair, temos a função theEnd:
-let rec theEnd () = 
+//Acaso o usuário digite "q" para sair, temos as funções confirmarSaida e theEnd(principal):
+let confirmarSaida () =
+    printf "Tem certeza que deseja sair? (S/N): "
+    match Console.ReadLine() with
+    | null -> None
+    | valor ->
+        match valor.Trim().ToUpper() with
+        | "S" -> Some true
+        | "N" -> Some false
+        | _ -> None
 
-    printfn"Tem certeza que deseja sair? (S/N): "
+let rec theEnd () =
+    match confirmarSaida () with
+    | Some true -> 
+        printfn "Saindo do programa..."
+        Environment.Exit(0)
+    | Some false -> printfn "Ok"
+    | None -> 
+        printfn "Entrada inválida! Digite 'S' ou 'N'!"
+        theEnd() 
+        
+let rec  maisUmaoperação função op =
+    printfn$"Deseja efetuar mais uma {operação}? (S\N)"
+    printfn"Ou então digite 'Q' para sair: "
 
-    let entrada0: option<string> =
+    entrada <- Console.ReadLine ()
 
-        match Console.ReadLine() with
-        | null -> None
-        | valor -> Some valor
-     
-    match entrada0 with
-    | None ->        printfn"Digite 'S' ou 'N'!"
-                     theEnd()
+    match entrada.Trim().ToUpper() with
+    |"Q"     ->   theEnd () 
+    |"S"     ->   função op                                     
+    |"N"     ->   printfn "Ok" 
+    |_       ->   printfn "Entrada inesperada! Digite 'S' ou 'N'!"
+                  maisUmaoperação função op
+                  printfn""
+        
+let Início () =
+    Console.WriteLine("CALCULADORA")
 
-    | Some valor ->
-                     match valor with
-                     |"N" |"n" -> 
-                                  printfn"Ok"
-                     |"S" |"s" -> 
-                                  printfn"Saindo do programa..."
-                                  Environment.Exit(0)
-                     |_       ->   printfn "Entrada inesperada! Digite novamente (S/N): "
-                                   theEnd ()
-                    
-                                              
+    printfn ""
+
+    printfn "-------(Pressione \"q\" para sair!)-------"
+
 
 let rec EscolhendoOperações () =
 
     printfn ""
     printfn "Com o quê você quer trabalhar?:  "
-    printfn "C) Conjuntos | A) Adição de grandes volumes | S) Subtração | M) Multiplicação de grandes volumes | D) Divisão | E) Exponenciação |
-    \nR) Raiz quadrada | !) Fatorial! | F) Fibonacci | q) Sair: "
+    printfn "A) Adição de grandes volumes | C) Conjuntos | D) Divisão | E) Exponenciação| S) Subtração | M) Multiplicação de grandes volumes |
+    \nR) Raiz quadrada | !) Fatorial! | F) Fibonacci | Q) Sair: "
 
     let entrada1: option<string> =
         match Console.ReadLine() with
-        | null -> None
+        | null  -> None
         | valor -> Some valor
      
     match entrada1 with
-    | None ->       failwith "Digite uma entrada válida!:"
+    | None ->       printfn "Digite uma entrada válida!:"
                     EscolhendoOperações ()
 
     | Some valor ->
-                    match valor with
-                    | "Q" | "q" -> theEnd ()
-                    | "C" | "c" -> operação <- "Conjuntos"
-                    | "A" | "a" -> operação <- "Adição"
-                    | "S" | "s" -> operação <- "Subtração"
-                    | "M" | "m" -> operação <- "Multiplicação"
-                    | "D" | "d" -> operação <- "Divisão"
-                    | "E" | "e" -> operação <- "Exponenciação"
-                    | "R" | "r" -> operação <- "Raiz quadrada"
-                    | "!" -> operação <- "Fatorial"
-                    | "F" | "f" -> operação <- "Fibonacci"
-                    | _ -> failwith "Oooops, input inesperado.. Digite uma inicial de operação válida!"
-                           EscolhendoOperações ()
-
+                    match valor.Trim().ToUpper() with
+                    | "Q"  -> theEnd ()  
+                              EscolhendoOperações()
+                    | "A"  -> operação <- "Adição"
+                              
+                    | "C"  -> operação <- "Conjuntos"
+                    | "R"  -> operação <- "Raiz quadrada"
+                    | "D"  -> operação <- "Divisão"
+                    | "E"  -> operação <- "Exponenciação"
+                    | "S"  -> operação <- "Subtração"
+                    | "M"  -> operação <- "Multiplicação"
+                    | "!"  -> operação <- "Fatorial"
+                    | "F"  -> operação <- "Fibonacci"
+                    | _    -> printfn "Entrada inesperada.. Digite uma inicial de operação válida!"
+                              EscolhendoOperações ()
 
 let rec ComputandoOperações operação =
     
     match operação with
+    | "Adição" ->     printfn"Você escolheu \"Adição\""  
+
+                      printf "Digite os valores a serem somados com espaços entre eles: "
+
+                      entrada <- Console.ReadLine ()
+
+                      let StringEntrada = string entrada
+                      let separadores = [| ' '; ';'; ':' |]
+                      let StringArrayValSeparados = StringEntrada.Split(separadores, StringSplitOptions.RemoveEmptyEntries)
+                      let EntradaParaFloatArray = Array.map (float) StringArrayValSeparados
+                      let soma = arraySoma EntradaParaFloatArray
+                      let somaString = (string)soma
+                      let textoConcatenado = String.concat ", " StringArrayValSeparados // Embora Split forme um array com separadores, para imprimirmos no Console necessitamos concatenar com ,
+                  
+                      printf $"O(s) valor(es) "   
+                      printfn "%s" textoConcatenado
+                      printfn "Gera(m) o somatório de: %s" somaString 
+              
+                      maisUmaoperação ComputandoOperações operação
+                      EscolhendoOperações ()
+                        
     | "Conjuntos" ->  printfn"Você escolheu Conjuntos!"
                       
                       printf "Com quantos conjuntos você quer trabalhar?: "      
@@ -296,55 +326,57 @@ let rec ComputandoOperações operação =
                               | valor -> Some valor
 
                           match entrada2 with
-                          |None   -> failwith "Entrada nula! Digite uma entrada válida!"
-                                      OperaçõesDeConjuntos ()
+                          |None       ->   
+                                            printfn"Entrada nula! Digite uma entrada válida!"
+                                            OperaçõesDeConjuntos ()
                           |Some valor -> 
 
-                                         match valor with                     
-                                         |"Q"|"q" -> 
-                                                     Environment.Exit(0)
+                                            match valor with                     
+                                            |"Q"|"q" -> 
+                                                         theEnd ()
+                                                         OperaçõesDeConjuntos ()
 
-                                         |"U"|"u" ->
-                                                     let mutable união = HashSet<double>()
-                                                     for i = 0 to quantidade - 2 do
-                                                         união <- AUB (conjunto.[i]) (conjunto.[i+1])
-                                                     printfn $"A união dos conjuntos é: {EscrevaOconjunto união}" 
+                                            |"U"|"u" ->
+                                                         let mutable união = HashSet<double>()
+                                                         for i = 0 to quantidade - 2 do
+                                                          união <- AUB (conjunto.[i]) (conjunto.[i+1])
+                                                         printfn $"A união dos conjuntos é: {EscrevaOconjunto união}" 
 
-                                         |"I"|"i" -> 
-                                                     let mutable intersecção = HashSet<double>()
-                                                     for i = 0 to quantidade - 2 do
-                                                         intersecção <- AIB (conjunto.[i]) (conjunto.[i+1])
-                                                     printfn $"A interseção dos conjuntos é: {EscrevaOconjunto intersecção}"
+                                            |"I"|"i" -> 
+                                                         let mutable intersecção = HashSet<double>()
+                                                         for i = 0 to quantidade - 2 do
+                                                          intersecção <- AIB (conjunto.[i]) (conjunto.[i+1])
+                                                         printfn $"A interseção dos conjuntos é: {EscrevaOconjunto intersecção}"
 
-                                         |"D"|"d" -> 
-                                                     let mutable diferença = HashSet<double>()
-                                                     for i = 0 to quantidade - 2 do
-                                                         diferença <- AdifB (conjunto.[i]) (conjunto.[i+1])
-                                                     printfn $"A diferença dos conjuntos é: {EscrevaOconjunto diferença}"
+                                            |"D"|"d" -> 
+                                                         let mutable diferença = HashSet<double>()
+                                                         for i = 0 to quantidade - 2 do
+                                                          diferença <- AdifB (conjunto.[i]) (conjunto.[i+1])
+                                                         printfn $"A diferença dos conjuntos é: {EscrevaOconjunto diferença}"
 
-                                         |"P"|"p" -> printf "Para qual conjunto você quer testar pertinência? Digite a letra do conjunto: "
-                                                     entrada <- Console.ReadLine ()
-                                                     let letraDoconjunto = entrada
+                                            |"P"|"p" ->  printf "Para qual conjunto você quer testar pertinência? Digite a letra do conjunto: "
+                                                         entrada <- Console.ReadLine ()
+                                                         let letraDoconjunto = entrada
 
-                                                     printf "Agora, qual elemento você quer saber se pertence a %s?: " letraDoconjunto
-                                                     entrada <- Console.ReadLine ()
+                                                         printf "Agora, qual elemento você quer saber se pertence a %s?: " letraDoconjunto
+                                                         entrada <- Console.ReadLine ()
                      
-                                                     let elemento = (double)entrada
-                                                     let conjuntoFormatado =  mapa.[letraDoconjunto] |> Seq.toList |> List.map string |> String.concat ", "
+                                                         let elemento = (double)entrada
+                                                         let conjuntoFormatado =  mapa.[letraDoconjunto] |> Seq.toList |> List.map string |> String.concat ", "
                      
-                                                     if mapa.ContainsKey(letraDoconjunto) then
+                                                         if mapa.ContainsKey(letraDoconjunto) then
                                           
-                                                         if apA elemento mapa.[letraDoconjunto] then
-                                                             printfn $"O elemento {elemento} pertence a {letraDoconjunto} de fato, pois {letraDoconjunto} = {{{conjuntoFormatado}}}"       
-                                                         else
+                                                          if apA elemento mapa.[letraDoconjunto] then
+                                                              printfn $"O elemento {elemento} pertence a {letraDoconjunto} de fato, pois {letraDoconjunto} = {{{conjuntoFormatado}}}"       
+                                                          else
                                                              printfn $"O elemento {elemento} NÃO pertence a {letraDoconjunto}, pois {letraDoconjunto} = {{{conjuntoFormatado}}}"
-                                                     else
-                                                         printfn $"O conjunto {conjunto} não existe no mapa"
+                                                         else
+                                                          printfn $"O conjunto {conjunto} não existe no mapa"
 
                           
 
-                                         |_       -> failwith "Entrada inválida. Tente novamente." 
-                                                     OperaçõesDeConjuntos ()
+                                            |_       ->  printfn "Entrada inválida. Tente novamente." 
+                                                         OperaçõesDeConjuntos ()
 
                           
                           let rec outraOp () =
@@ -359,12 +391,13 @@ let rec ComputandoOperações operação =
                                          outraOp ()
                               |Some valor -> 
 
-                                             match valor with
-                                             |"Q"|"q" -> Environment.Exit(0)
-                                             |"N"|"n" -> printfn "Ok"
-                                             |"S"|"s" -> OperaçõesDeConjuntos ()
-                                             |_       -> failwith "Entrada inesperada! Digite novamente: "
-                                                            outraOp ()
+                                             match valor.Trim().ToUpper() with
+                                             |"Q" ->   theEnd()
+                                                       OperaçõesDeConjuntos ()
+                                             |"N" ->   printfn "Ok"
+                                             |"S" ->   OperaçõesDeConjuntos ()
+                                             |_   ->   printfn"Entrada inesperada! Digite novamente: "
+                                                       outraOp ()
                           printfn""
 
                       printfn ""
@@ -372,452 +405,157 @@ let rec ComputandoOperações operação =
         //Permitir o usuário fazer, por exemplo,( A U B inter C) dif D //Vou fazer uma calculadora de conjuntos a parte
         //Permitir ao usuário passar conjuntos de forma sequencial através do Console, ex: {1..10..100}
         //Repassar para o usuário todo o poder do F#
-               
-    | "Adição" ->     printfn"Você escolheu \"Adição\""  
-                      printf "Digite os valores a serem somados com espaços entre eles: "
-
-                      entrada <- Console.ReadLine ()
-
-                      let StringEntrada = string entrada
-                      let separadores = [| ' '; ';'; ':' |]
-                      let StringArrayValSeparados = StringEntrada.Split(separadores, StringSplitOptions.RemoveEmptyEntries)
-                      let EntradaParaFloatArray = Array.map (float) StringArrayValSeparados
-                      let soma = Array.sum EntradaParaFloatArray
-                      let somaString = (string)soma
-                      let textoConcatenado = String.concat ", " StringArrayValSeparados // Embora Split forme um array com separadores, para imprimirmos no Console necessitamos concatenar com ,
-                  
-                      printf $"O(s) valor(es) "   
-                      printfn "%s" textoConcatenado
-                      printfn "Gera(m) o somatório de: %s" somaString // Não gosto de trabalhar com valores numéricos na saída
-
-                      printfn"Deseja efetuar mais uma adição? (s\n)"
               
-                      let rec maisUmaadição () =
-                          entrada <- Console.ReadLine ()
-                          match entrada with
-                          |"N"|"n" -> 
-                                        printfn "Ok"
-                          |"Q"|"q" -> 
-                                        let rec theEnd () = 
-                                            printfn"Tem certeza que deseja sair? (S/N): "
-                                            entrada <- Console.ReadLine()
-                                            entrada <- entrada.ToUpper()
-                                            if entrada = "S" then
-                                                Environment.Exit(0)
-                                            elif entrada = "N" then
-                                                printfn"Ok"
-                                              
-                                            else failwith "Entrada inesperada! Digite novamente (S/N): "
-                                                 theEnd ()
-                                      
-                                            if entrada= "N" then maisUmaadição () 
-                                        printfn""
+                     
+    | "Multiplicação"        ->  printfn "Você escolheu Multiplicação!" //Copiar e colar o código da Adição acima. Trocar apenas a operação
+                                 printf "Digite os valores a serem multiplicados com espaços entre eles: "
 
-                          |"S"|"s" -> 
-                                        ComputandoOperações operação
-                                        printfn ""
+                                 entrada <- Console.ReadLine ()
 
-                          |_ ->         failwith "Entrada inesperada! Digite novamente: "
-                                        maisUmaadição ()
+                                 let StringEntrada = string entrada
+                                 let separadores = [| ' '; ';'; ':' |]
+                                 let StringArrayValSeparados = StringEntrada.Split(separadores, StringSplitOptions.RemoveEmptyEntries)
+                                 let EntradaParaFloatArray = Array.map (float) StringArrayValSeparados
+                                 let produto = arrayProduto EntradaParaFloatArray
+                                 let produtoString = (string) produto
+                                 let textoConcatenado = String.concat ", " StringArrayValSeparados // Embora Split forme um array com separadores, para imprimirmos no Console necessitamos concatenar com ,
+                  
+                                 printf $"O(s) valor(es) "   
+                                 printfn "%s" textoConcatenado
+                                 printfn "Gera(m) o total de: %s" produtoString
+              
+                                 maisUmaoperação ComputandoOperações operação
 
-                      printfn""       
-    
-    | "Multiplicação"        -> printfn "Você escolheu Multiplicação!" //Copiar e colar o código da Adição acima. Trocar apenas a operação
-
-                      
     | "Divisão"              -> printfn "Você escolheu \"Divisão\"!"
-    | "Exponenciação"        -> printfn "Você escolheu \"Exponenciação\"!"
-    | "Raiz quadrada"        -> printfn"VocE escolheu \"Raiz quadrada \"!"
-    | "Fatorial"             -> printfn"Você escolheu \"Fatorial\"!"
-    | "Fibonacci"            ->printfn"Você escolheu \"Fibonatti\"!"
-    |"Q"|"q"                 -> Environment.Exit(0)
-    |_                       -> failwith "Entrada inválida. Tente novamente." 
-                                      ComputandoOperações operação
+                                printf "Digite o valor 1: "
 
-EscolhendoOperações ()
-ComputandoOperações operação
-printfn ""
+                                entrada <- Console.ReadLine()
+
+                                let valor1 = decimal entrada
+        
+                                printf "Digite o valor 2: "
+
+                                entrada <- Console.ReadLine()
+
+                                let valor2 = decimal entrada
+
+                                let divisão = valor1/valor2
+
+                                printfn $"O valor {valor1}, dividido pelo valor {valor2} é: |{divisão}|" 
+
+                                printfn ""
+
+    | "Exponenciação"        -> printfn "Você escolheu \"Exponenciação\"!"
+                                printf "Digite a base da potência: "
+
+                                entrada <- Console.ReadLine()
+
+                                printfn ""
+
+                                let valor1 = int entrada
+
+                                printf "Agora digite o expoente: "
+
+                                entrada <- Console.ReadLine()
+
+                                printfn ""
+
+                                let valor2 = int entrada
+
+                                let potência = Pow valor1 valor2
+
+                                printfn $"A base {valor1}, elevada à potência de valor {valor2} é: |{potência}|"
+        
+                                printfn ""
+
+    | "Raiz quadrada"        -> printfn"Você escolheu |Raiz quadrada|!"
+
+                                printf "Digite o número: "
+
+                                entrada <- Console.ReadLine()
+
+                                let valor = float entrada
+       
+                                let resultado = raiz valor
+
+                                printfn $"A raiz quadrada do valor {valor}, é: |{resultado}|"
+        
+                                printfn ""
+
+    | "Fatorial"             -> printfn"Você escolheu \"Fatorial\"!"
+
+                                printf "Digite o número inteiro!: "
+
+                                entrada <- Console.ReadLine()
+
+                                let valor = int entrada
+        
+                                let rec fatorial n =
+                                    if n <= 1 then 
+                                        1
+                                    else
+                                        n * fatorial (n-1)
+
+                                let resultado = fatorial valor
+
+                                printfn $"O fatorial de {valor} ({valor}!), é: {resultado}"
+        
+                                printfn ""    
+
+    | "Fibonacci"            -> printfn"Você escolheu |Fibonacci|!"
+
+                                let valor = int entrada
+
+                                let  valorAnterior = valor - 1
+
+                               // Função recursiva para calcular Fibonacci
+                                let rec fib x =
+                                    match x with
+                                    | 1 -> 1
+                                    | 2 -> 1
+                                    | x -> fib (x - 1) + fib (x - 2)
+
+                                let resultado = fib valor
+
+                                let resultadoAnterior = fib valorAnterior
+
+                                let resultadoDouble = double resultado
+
+                                let resultadoAnteriorDouble = double resultadoAnterior
+
+                                let phiAproximado =  (resultadoDouble/resultadoAnteriorDouble)
+
+                                let phi = 1.61803398874989484820
+
+                                printfn $"O {valor}º termo da sequência de Fibonacci é o número {resultado}"
+        
+                                printfn ""
+
+                                printfn $"A razão áurea aproximada para esse termo é: {phiAproximado}"
+
+                                printfn $"O valor real de phi é de {phi}" 
+
+                                printfn "O desvio entre o valor real e o valor aproximado de phi é de: %f" (phi - phiAproximado)
+
+    |_                       -> printfn"Entrada inválida. Tente novamente."
+                                ComputandoOperações operação
+    printfn""
+
+[<EntryPoint>]
+    let main argv =
+        Início ()
+        EscolhendoOperações ()
+        ComputandoOperações operação
+        0 // código de saída
+
 
   
 
-let booleano = true
 
-printfn ""
 
-while booleano do
 
-    if operação = "0" then
 
-        printf "Com quantos conjuntos você quer trabalhar?: "
-        let quantidade = int (Console.ReadLine())
-        
-        let mutable conjunto : HashSet<double>[] = Array.init quantidade (fun _-> HashSet<double>())
-        let nomes = [|"A";"B";"C";"D";"E";"F";"G";"H";"I";"J";"K";"L";"M";"N"|]
-        let mapa = Dictionary<string, HashSet<double>>()
-        for i = 0 to quantidade - 1 do
-            let nome =  if i < nomes.Length  then nomes.[i] else $"Conjunto{i+1}"
-            mapa.Add(nome, conjunto.[i])
-
-           
-            printfn $"Adicione os elementos de seu conjunto {nome}, separados por espaços ou ponto e vírgula ou dois pontos: "
-            printf "%s = { " (nome)
-            entrada <- Console.ReadLine() 
-            printf " }"
-            theEnd entrada
-
-            let valoresString = string entrada
-            let separadores = [| ' '; ';'; ':' |]
-            let valoresSeparados = valoresString.Split(separadores, StringSplitOptions.RemoveEmptyEntries)
-
-            let valoresDouble = Array.map (double) valoresSeparados
-            conjunto.[i] <- HashSet<double>(valoresDouble)
-            
-            mapa.Add(nome, conjunto.[i])
-
-
-        let U (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
-            let resultado = HashSet<double>(A)
-            resultado.UnionWith(B)
-            resultado
-
-
-        let I (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
-            let resultado = HashSet<double>(A)
-            resultado.IntersectWith(B)
-            resultado
-
-        let D (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
-            let resultado = HashSet<double>(A)
-            resultado.ExceptWith(B)
-            resultado
-
-        //próximo: Pertence ou não pertence 
-
-        let pertence (A: HashSet<double>) (n: int): bool =
-            if A.Contains (n) then
-                true
-            else
-                false
-
-        printfn"Seus conjuntos são: "
-
-       
-        let EscrevaOconjunto conjunto =
-
-            let agrupeSeqElementos =
-                conjunto|> Seq.map string|> String.concat ", "
-
-            printfn$"{nomes.[i]}= {{{agrupeSeqElementos conjunto}}}"
-            printfn ""
-        
-        for i = 0 to quantidade - 1 do
-
-            EscrevaOconjunto mapa.[nomes.[i]]
-
-
-       
-        let rec OperaçõesDeConjuntos =
-            printfn "" 
-            printfn "O que você quer calcular?: "
-            printfn"P) Pertence U) União  I) Intersecção C) Complementar D) Diferença q) Sair"
-            entrada <- Console.ReadLine()
-
-            theEnd entrada
-
-            match entrada with
-                | null -> failwith "Entrada nula"
-                          OperaçõesDeConjuntos// trata entrada nula
-              //| "U"|"u" ->
-              //   let mutable união
-              //   for i = 0 to quantidade -1 do
-                | s when s.Length = 1 && Char.IsLetter(s.[0]) && Char.ToUpper(s.[0]) = Char.ToUpper("U") ->
-                    let mutable união: HashSet<double>= conjunto.[0]
-                    for i = 0 to quantidade - 1 do
-                         U união conjunto.[i+1]//Vou ter que clonar os conjuntos para não alterá-los
-                | s when s.Length = 1 && Char.IsLetter(s.[0]) && Char.ToUpper(s.[0]) = Char.ToUpper("I") ->
-                    let interseção: HashSet<double>= conjunto.[0]
-                    for i = 0 to quantidade - 1 do
-                         I interseção conjunto.[i+1]//Vou ter que clonar os conjuntos para não alterá-los
-                | s when s.Length = 1 && Char.IsLetter(s.[0]) && Char.ToUpper(s.[0]) = Char.ToUpper("D") ->
-                    let diferença: HashSet<double>= conjunto.[0]
-                    for i = 0 to quantidade - 1 do
-                         D diferença conjunto.[i+1]//Vou ter que clonar os conjuntos para não alterá-los
-                | s when s.Length = 1 && Char.IsLetter(s.[0]) && Char.ToUpper(s.[0]) = Char.ToUpper("P") ->
-                     printf "Para qual conjunto você quer testar pertinência? Digite a letra do conjunto: "
-                     entrada <- Console.ReadLine
-                     theEnd entrada
-                     let letraDoconjunto = entrada
-                     
-
-                     printf "Agora, qual elemento você quer saber se pertence a %s?: " letraDoconjunto
-                     entrada <- Console.ReadLine
-                     theEnd entrada
-                     let elemento = entrada
-                     let conjunto =  mapa.[letraDoconjunto] |> Seq.toList |> List.map string |> String.concat ", "
-                     
-
-                     if mapa.ContainsKey(letraDoconjunto) then
-                         pertence mapa.[letraDoconjunto] elemento
-                         if pertence then
-                             printfn $"O elemento {elemento} pertence a {letraDoconjunto} de fato, pois {letraDoconjunto} = {{{conjunto}}}"       
-                         else
-                             printfn $"O elemento {elemento} NÃO pertence a {conjunto}, pois {letraDoconjunto} = {{{conjunto}}}"
-                     else
-                         printfn $"O conjunto {conjunto} não existe no mapa"
-
-
-                 | _ -> printfn "Entrada inválida. Tente novamente." OperaçõesDeConjuntos
-
-                
-            
-                
-
-        
-
-
-
-        //Permitir o usuário fazer, por exemplo,( A U B inter C) dif D 
-
-        
-
-
-
-    if operação = "1" then
-
-    //lendo as entradas do console e somando
-        printf "Digite os valores a serem somados com espaços entre eles: "
-        entrada <- Console.ReadLine ()
-
-        theEnd entrada
-
-        let valoresString = string entrada
-        let separadores = [| ' '; ';'; ':' |]
-        let valoresSeparados = valoresString.Split(separadores, StringSplitOptions.RemoveEmptyEntries)
-
-        let floatArray = Array.map (float) valoresSeparados
-        let soma = Array.sum floatArray
-
-        printf $"O(s) valor(es) "
-
-        for valor in floatArray do
-            printf $"<{valor}>, "
-
-        printfn $"gera(m) o somatório de: {soma} "
-
-        printfn ""
-
-     elif operação = "2" then
-
-        printf "Digite o valor 1: "
-        entrada <- Console.ReadLine()
-
-        theEnd entrada
-
-        let valor1= int entrada
-
-        printf "Digite o valor 2: "
-        entrada <- Console.ReadLine()
-
-        theEnd entrada
-
-        let valor2 = int entrada
-
-        let subtração = valor1 - valor2
-
-        printfn $"O valor {valor1}, subtraído do valor {valor2} é: |{subtração}|" 
-
-        printfn ""
-
-    elif operação = "3" then 
-
-        printf "Digite o valor 1: "
-
-        entrada <- Console.ReadLine()
-
-        theEnd entrada
-
-        let valor1 = int entrada
-       
-        printf "Digite o valor 2: "
-
-        entrada <- Console.ReadLine()
-
-        theEnd entrada
-
-        let valor2 = int entrada
-
-
-        let operaçãoPonto = valor1 * valor2
-
-        printfn $"O valor {valor1}, multiplicado pelo valor {valor2} é: |{operaçãoPonto}|"
-
-        printfn ""
-
-    elif operação = "4" then
-
-        printf "Digite o valor 1: "
-
-        entrada <- Console.ReadLine()
-
-        theEnd entrada
-
-        let valor1 = decimal entrada
-        
-        printf "Digite o valor 2: "
-
-        entrada <- Console.ReadLine()
-
-        theEnd entrada
-
-        let valor2 = decimal entrada
-
-        let divisão = valor1/valor2
-
-        printfn $"O valor {valor1}, dividido pelo valor {valor2} é: |{divisão}|" 
-
-        printfn ""
-
-    elif operação = "5" then //parei aqui
-    
-        printf "Digite a base da potência: "
-
-        entrada <- Console.ReadLine()
-
-        printfn ""
-
-        theEnd entrada
-
-        let valor1 = int entrada
-
-        printf "Digite o expoente: "
-
-        entrada <- Console.ReadLine()
-
-        printfn ""
-
-        theEnd entrada
-    
-        let valor2 = int entrada
-
-        let potência = Math.Pow(valor1, valor2)
-
-        printfn $"A base {valor1}, elevada à potência de valor {valor2} é: |{potência}|"
-        
-        printfn ""
-
-    elif operação = "6" then
-    
-        printf "Digite o número: "
-        entrada <- Console.ReadLine()
-
-        theEnd entrada
-
-        let valor = float entrada
-        
-
-        let raiz x = Math.Sqrt(x)
-
-        let resultado = raiz valor
-
-        printfn $"A raiz quadrada do valor {valor}, é: |{resultado}|"
-        
-        printfn ""
-
-    elif operação = "7" then
-    
-        printf "Digite o número: "
-        entrada <- Console.ReadLine()
-
-        theEnd entrada
-
-        let valor = int entrada
-        
-
-        let rec fatorial n =
-            if n <= 1 then 
-               1
-            else
-               n * fatorial (n-1)
-
-        let resultado = fatorial valor
-
-        printfn $"O fatorial de {valor} ({valor}!), é: {resultado}"
-        
-        printfn ""    
-
-    elif operação = "8" then
      
-        printf "Qual número da sequência Fibonacci você quer calcular junto com o valor aproximado de phi?: "
-        entrada <- Console.ReadLine()
-
-        printf ""
-
-        theEnd entrada
-
-        let valor = int entrada
-
-        let  valorAnterior = valor - 1
-
-        // Função recursiva para calcular Fibonacci
-        let rec fib x =
-            match x with
-            | 1 -> 1
-            | 2 -> 1
-            | x -> fib (x - 1) + fib (x - 2)
-
-        let resultado = fib valor
-
-        let resultadoAnterior = fib valorAnterior
-
-        let resultadoDouble = double resultado
-
-        let resultadoAnteriorDouble = double resultadoAnterior
-
-        let phiAproximado =  (resultadoDouble/resultadoAnteriorDouble)
-
-        let phi = 1.61803398874989484820
-
-        printfn $"O {valor}º termo da sequência de Fibonacci é o número {resultado}"
-        
-        printfn ""
-
-        printfn $"A razão áurea aproximada para esse termo é: {phiAproximado}"
-        printfn $"O valor real de phi é de {phi}" 
-        printfn "O desvio entre o valor real e o valor aproximado de phi é de: %f" (phi - phiAproximado)
-
-        printfn ""
-
-    printfn "Qual a próxima operação?: "
-    printf "%s" Operações
-
-    operação <- Console.ReadLine()
-
-    theEnd operação
-
-    printfn ""
-
-
-
-
-
-
-
-
-        
-
-
-
-
-        
-
-
-
-
-        //E se eu quiser utilizar recursividade em vez de while?
-
-        //vamos tentar:
-
-        //
 
 
 

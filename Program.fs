@@ -17,26 +17,27 @@ open MathLibrary
 
   //Função que trata entradas de inteiros incorretas
 let ``éInt?`` (input: string) =
-
     match Int32.TryParse(input) with
     | (true, value) -> Some value
     | (false, _) -> None
-
+printfn""
 
 let mutable entrada = ""
 let mutable operação = ""
 let mutable quantidade : int = 0
 
-//Acaso o usuário digite "q" para sair, temos as funções confirmarSaida e theEnd(principal):
+//Caso o usuário digite "q" para sair, temos as funções confirmarSaida e theEnd(principal):
 let confirmarSaida () =
     printf "Tem certeza que deseja sair? (S/N): "
     match Console.ReadLine() with
-    | null -> None
-    | valor ->
+    |null -> None
+    |valor ->
         match valor.Trim().ToUpper() with
         | "S" -> Some true
         | "N" -> Some false
-        | _ -> None
+        | _ -> None            
+printfn""
+
 
 let rec theEnd () =
     match confirmarSaida () with
@@ -47,41 +48,34 @@ let rec theEnd () =
     | None -> 
         printfn "Entrada inválida! Digite 'S' ou 'N'!"
         theEnd() 
-        
-let rec  maisUmaoperação função op =
-    printfn$"Deseja efetuar mais uma {operação}? (S\N)"
-    printfn"Ou então digite 'Q' para sair: "
-
-    entrada <- Console.ReadLine ()
-
-    match entrada.Trim().ToUpper() with
-    |"Q"     ->   theEnd () 
-    |"S"     ->   função op                                     
-    |"N"     ->   printfn "Ok" 
-    |_       ->   printfn "Entrada inesperada! Digite 'S' ou 'N'!"
-                  maisUmaoperação função op
-                  printfn""
-        
+    printfn""
+printfn""
+  
+                
 let Início () =
     Console.WriteLine("CALCULADORA")
 
     printfn ""
 
     printfn "-------(Pressione \"q\" para sair!)-------"
-
+printfn""
 
 let rec EscolhendoOperações () =
 
     printfn ""
     printfn "Com o quê você quer trabalhar?:  "
-    printfn "A) Adição de grandes volumes | C) Conjuntos | D) Divisão | E) Exponenciação| S) Subtração | M) Multiplicação de grandes volumes |
-    \nR) Raiz quadrada | !) Fatorial! | F) Fibonacci | Q) Sair: "
+
+    Console.WriteLine()
+
+    printf"|A) Adição de grandes volumes| |C) Operações de Conjuntos| |R) Raiz quadrada| |D) Divisão| |E) Exponenciação| |S) Subtração| |M) Multiplicação de grandes volumes| |!) Fatorial!| |F) Fibonacci| |Q) Sair|: "
 
     let entrada1: option<string> =
         match Console.ReadLine() with
         | null  -> None
         | valor -> Some valor
-     
+    printfn""
+    
+
     match entrada1 with
     | None ->       printfn "Digite uma entrada válida!:"
                     EscolhendoOperações ()
@@ -90,23 +84,45 @@ let rec EscolhendoOperações () =
                     match valor.Trim().ToUpper() with
                     | "Q"  -> theEnd ()  
                               EscolhendoOperações()
-                    | "A"  -> operação <- "Adição"
-                              
-                    | "C"  -> operação <- "Conjuntos"
+                    | "A"  -> operação <- "Adição de grandes volumes"        
+                    | "C"  -> operação <- "Operações De Conjuntos"
                     | "R"  -> operação <- "Raiz quadrada"
                     | "D"  -> operação <- "Divisão"
                     | "E"  -> operação <- "Exponenciação"
                     | "S"  -> operação <- "Subtração"
-                    | "M"  -> operação <- "Multiplicação"
+                    | "M"  -> operação <- "Multiplicação de grandes volumes"
                     | "!"  -> operação <- "Fatorial"
                     | "F"  -> operação <- "Fibonacci"
                     | _    -> printfn "Entrada inesperada.. Digite uma inicial de operação válida!"
                               EscolhendoOperações ()
+                    printfn""
+    printfn""
+printfn""
+  
 
-let rec ComputandoOperações operação =
+let rec  maisUmaoperação comput op =
+    printfn$"Deseja efetuar mais uma {operação}? (S\N)"
+    printf"Ou então digite 'Q' para sair: "
+
+    entrada <- Console.ReadLine ()
+
+    match entrada.Trim().ToUpper() with
+    |"Q"     ->   theEnd () 
+    |"S"     ->   comput op                                     
+    |"N"     ->   printfn "Ok" 
+                  Início ()  
+    |_       ->   printfn "Entrada inesperada! Digite 'S' ou 'N'!"
+                  maisUmaoperação comput op
+                  printfn""
+    printfn""
+    Console.WriteLine()
+printfn""
+ 
+
+let rec ComputandoOperação operação =
     
     match operação with
-    | "Adição" ->     printfn"Você escolheu \"Adição\""  
+    |"Adição"  ->     Console.WriteLine()  
 
                       printf "Digite os valores a serem somados com espaços entre eles: "
 
@@ -120,112 +136,120 @@ let rec ComputandoOperações operação =
                       let somaString = (string)soma
                       let textoConcatenado = String.concat ", " StringArrayValSeparados // Embora Split forme um array com separadores, para imprimirmos no Console necessitamos concatenar com ,
                   
-                      printf $"O(s) valor(es) "   
-                      printfn "%s" textoConcatenado
-                      printfn "Gera(m) o somatório de: %s" somaString 
+                   // printf $"O(s) valor(es) "   
+                   //   printfn "%s" textoConcatenado
+                      printfn "R: %s" somaString 
+
+                      Console.WriteLine()
               
-                      maisUmaoperação ComputandoOperações operação
+                      maisUmaoperação ComputandoOperação operação
+                      
+                      Console.WriteLine()
+
                       EscolhendoOperações ()
                         
-    | "Conjuntos" ->  printfn"Você escolheu Conjuntos!"
-                      
-                      printf "Com quantos conjuntos você quer trabalhar?: "      
+    |"Operações De Conjuntos" ->  Console.WriteLine()
 
-                      let tryParseInt (s: string) =
-                          match Int32.TryParse(s) with
-                          | (true, value) -> Some value
-                          | (false, _) -> None
+                                  printfn"Você escolheu Operações De Conjuntos!"
 
-                      let rec pedirNumero () =
-                          printf "Com quantos conjuntos você quer trabalhar?: "
-                          let input = Console.ReadLine()
-                          match tryParseInt input with
-                          | Some value -> quantidade <- value
-                          | None       ->
+                                  let tryParseInt (s: string) =
+                                      match Int32.TryParse(s) with
+                                      | (true, value) -> Some value
+                                      | (false, _) -> None                                     
+                                  printfn""
+
+                                  let rec pedirNumero () =
+                                      printf "Com quantos conjuntos você quer trabalhar?: "
+
+                                      let input = Console.ReadLine()
+
+                                      match tryParseInt input with
+                                      | Some value -> quantidade <- value
+                                      | None       ->
                                           printfn "Por favor, digite um número válido."
                                           pedirNumero ()
+                                      printfn""
+                                  printfn""
 
 
-                      printfn "Quantidade escolhida: %d" quantidade
+                                  printfn "Quantidade escolhida: %d" quantidade
 
 
-                      let mutable conjunto : HashSet<double>[] = Array.init quantidade (fun _-> HashSet<double>())
+                                  let mutable conjunto : HashSet<double>[] = Array.init quantidade (fun _-> HashSet<double>())
 
-                      let nomes = [|"A";"B";"C";"D";"E";"F";"G";"H";"I";"J";"K";"L";"M";"N"|]
+                                  let nomes = [|"A";"B";"C";"D";"E";"F";"G";"H";"I";"J";"K";"L";"M";"N"|]
 
-                      let mapa = Dictionary<string, HashSet<double>>()
+                                  let mapa = Dictionary<string, HashSet<double>>()
+
+                                  let EscrevaOconjunto Cj =
+
+                                          let agrupeSeqElementos = conjunto|> Seq.map string|> String.concat ", "
+                          
+                                          printfn$"{Cj} = {{{agrupeSeqElementos}}}"
+
+                                  printfn ""
 
                       //Esse loop provavelmente vai virar uma função recursiva porém os foreach de uma linha acredito que não há porque mudar, a não ser
                       //que encontre algo que funcione mais rápido. Tem coisa que seja mais rápido que um foreach de uma linha?
-                      for i = 0 to quantidade - 1 do
-                          let nome =  if i < nomes.Length  then nomes.[i] else $"Conjunto{i+1}"
+                                  for i = 0 to quantidade - 1 do
+                                      let nome =  if i < nomes.Length  then nomes.[i] else $"Conjunto{i+1}"
+ 
+                                      mapa.Add(nome, conjunto.[i])
 
-                          mapa.Add(nome, conjunto.[i])
-
-                          printfn $"Adicione os elementos de seu conjunto {nome}, separados por espaços ou ponto e vírgula ou dois pontos: "
+                                      printfn $"Adicione os elementos de seu conjunto {nome}, separados por espaços ou ponto e vírgula ou dois pontos: "
                           
-                          printf "%s = { " nome
+                                      printf "%s = { " nome
                           
-                          entrada <- Console.ReadLine() 
+                                      entrada <- Console.ReadLine() 
                           
-                          printf " }"
+                                      printf " }"
                       
                           
-                          let valoresString = string entrada
+                                      let valoresString = string entrada
                           
-                          let separadores = [| ' '; ';'; ':' |]
+                                      let separadores = [| ' '; ';'; ':' |]
                           
-                          let valoresSeparados = valoresString.Split(separadores, StringSplitOptions.RemoveEmptyEntries)
+                                      let valoresSeparados = valoresString.Split(separadores, StringSplitOptions.RemoveEmptyEntries)
                           
-                          let valoresDouble = Array.map (double) valoresSeparados
+                                      let valoresDouble = Array.map (double) valoresSeparados
                           
-                          conjunto.[i] <- HashSet<double>(valoresDouble)
+                                      conjunto.[i] <- HashSet<double>(valoresDouble)
             
-                          mapa.Add(nome, conjunto.[i])
+                                      mapa.Add(nome, conjunto.[i])
                           
-                      printfn"Seus conjuntos são: "
+                                  printfn""
 
-                      let EscrevaOconjunto Cj =
+                                  printfn "Seus conjuntos são: "    
 
-                          let agrupeSeqElementos = conjunto|> Seq.map string|> String.concat ", "
-                          
-                          printfn$"{Cj} = {{{agrupeSeqElementos}}}"
-
-                      printfn ""
+                                  for i = 0 to quantidade - 1 do   
         
-                      for i = 0 to quantidade - 1 do
+                                      EscrevaOconjunto mapa.[nomes.[i]]
 
-                      EscrevaOconjunto mapa.[nomes.[i]]
-
-
-                      
-                      
                       //Tentando encontrar a melhor forma de trabalhar com conjuntos numéricos em F#:
 
-
-                      let Ni = Seq.initInfinite id (*Se N,R,Z,Q são infinitos então a melhor maneira de trabalhar com eles em programação, deve ser usando
+                                  let Ni = Seq.initInfinite id (*Se N,R,Z,Q são infinitos então a melhor maneira de trabalhar com eles em programação, deve ser usando
                                                     Seq.initInfinite*)
-                      let primeiros2mil = Ni |> Seq.take 2000|> Seq.map string |> String.concat ", "
+                                  let primeiros2mil = Ni |> Seq.take 2000|> Seq.map string |> String.concat ", "
 
-                      let escrevaN = printfn $"N = {{{primeiros2mil}}}"
+                                  let escrevaN = printfn $"N = {{{primeiros2mil}}}"
 
-                      let NaturaisCSV =
-                          Ni
-                          |> Seq.take 10000
-                          |> Seq.map string
-                          |> String.concat ", "
+                                  let NaturaisCSV =
+                                          Ni
+                                          |> Seq.take 10000
+                                          |> Seq.map string
+                                          |> String.concat ", "
     
-                      File.WriteAllText("naturais.csv", NaturaisCSV)
+                                  File.WriteAllText("naturais.csv", NaturaisCSV)
     
-                      let N = seq {1..2..1000000000}
-                      let Npar = seq {2..4..1000000000}
-                      let Nímpar = seq {1..3..999999999}
+                                  let N = seq {1..2..1000000000}
+                                  let Npar = seq {2..4..1000000000}
+                                  let Nímpar = seq {1..3..999999999}
 
-                      //Parei aqui: Tem coisa para fazer daqui para a frente!
-                      let união =  Seq.append Nímpar Npar |> Seq.distinct
-                      let AmB = N |> Seq.except Npar
-                      let AInterB = N|> Seq.filter (fun x -> Seq.contains x Npar)
-                      let númerosbons = seq {1,2,3,5,7,9,11,14,20,22,30,35,42,52,77,100}
+                                      //Parei aqui: Tem coisa para fazer daqui para a frente!
+                                  let união =  Seq.append Nímpar Npar |> Seq.distinct
+                                  let AmB = N |> Seq.except Npar
+                                  let AInterB = N|> Seq.filter (fun x -> Seq.contains x Npar)
+                                  let númerosbons = seq {1,2,3,5,7,9,11,14,20,22,25,30,32,35,41,42,52,61,77,100}
 
 
                       (*
@@ -237,99 +261,111 @@ let rec ComputandoOperações operação =
                       //#r "nuget: ClosedXML"
 
                       //Função que converte uma planilha Excel (passando seu caminho como parâmetro) em uma matriz 2D do tipo double
-                      let PlanilhaParaMatriz (caminho: string) : double[,] =
-                         if not (File.Exists(caminho)) then
-                             failwithf "Arquivo não encontrado: %s" caminho
-                         let planilha = new XLWorkbook(caminho)
-                         let aba = planilha.Worksheet(1)
+                                  let PlanilhaParaMatriz (caminho: string) : double[,] =
+                                      if not (File.Exists(caminho)) then
+                                          printfn "Arquivo não encontrado: %s" caminho
+                                      let planilha = new XLWorkbook(caminho)
+                                      let aba = planilha.Worksheet(1)
 
-                         let ultimaLinha = aba.LastRowUsed().RowNumber()
-                         let ultimaColuna = aba.LastColumnUsed().ColumnNumber()
+                                      let ultimaLinha = aba.LastRowUsed().RowNumber()
+                                      let ultimaColuna = aba.LastColumnUsed().ColumnNumber()
 
-                         Array2D.init ultimaLinha ultimaColuna (fun linha coluna ->
-                             aba.Cell(linha + 1, coluna + 1).GetValue<double>()
-                         )
+                                      Array2D.init ultimaLinha ultimaColuna (fun linha coluna ->
+                                      aba.Cell(linha + 1, coluna + 1).GetValue<double>()
+                                  )
+                                  printfn""
 
                     // Definindo os caminhos das planilhas Excel
-                      let caminhoN = Path.Combine(__SOURCE_DIRECTORY__, "naturais.xlsx")
-                      let caminhoP = Path.Combine(__SOURCE_DIRECTORY__, "pares.xlsx")
+                                  let caminhoN = Path.Combine(__SOURCE_DIRECTORY__, "naturais.xlsx")
+                                  let caminhoP = Path.Combine(__SOURCE_DIRECTORY__, "pares.xlsx")
 
-                      let matriznaturais = PlanilhaParaMatriz caminhoN
-                      let matrizpares = PlanilhaParaMatriz caminhoP
+                                  let matriznaturais = PlanilhaParaMatriz caminhoN
+                                  let matrizpares = PlanilhaParaMatriz caminhoP
 
-                      printfn "Caminho usado: %s" caminhoN
+                                  printfn "Caminho usado: %s" caminhoN
                       
 
-                      //Função que converte uma matriz 2D em um conjunto HashSet
-                      let matrizParaHashSet (matriz: double[,]) : HashSet<double> =
-                          let linhas = Array2D.length1 matriz
-                          let colunas = Array2D.length2 matriz
+                                      //Função que converte uma matriz 2D em um conjunto HashSet
+                                  let matrizParaHashSet (matriz: double[,]) : HashSet<double> =
+                                      let linhas = Array2D.length1 matriz
+                                      let colunas = Array2D.length2 matriz
 
-                          let elementos =
-                              seq {
-                                  for i in 0 .. linhas - 1 do
-                                      for j in 0 .. colunas - 1 do
-                                          yield matriz.[i, j]
-                              }
+                                      let elementos =
+                                          seq {
+                                              for i in 0 .. linhas - 1 do
+                                                  for j in 0 .. colunas - 1 do
+                                                      yield matriz.[i, j]
+                                      }
 
-                          HashSet<double>(elementos)
+                                      HashSet<double>(elementos)
+                                  printfn""
 
 
-                      let HSN = matrizParaHashSet matriznaturais
-                      let HSP = matrizParaHashSet matrizpares
+                                  let HSN = matrizParaHashSet matriznaturais
+                                  let HSP = matrizParaHashSet matrizpares
                       
 
-                      let NUP = AUB HSN HSP
-                      printfn $"A união do conjunto dos naturais até mil com o conjunto dos números pares até dois mil é: {EscrevaOconjunto NUP}"
-                      printfn ""
-                      let NIP = AIB HSN HSP
-                      printfn $"A interseção do conjunto dos naturais até mil, com o conjunto dos números pares até 2000 é: {EscrevaOconjunto NIP}"
-                      printfn ""
-                      let NdifP = AdifB HSN HSP
-                      printfn $"O conjunto dos naturais até mil, menos o conjunto dos números pares até 2000 é: {EscrevaOconjunto NdifP}"
-                      printfn ""
-                      let HSP_ = A_ HSP HSN
-                      printfn $"O complementar dos números pares até dois mil em relação ao conjunto dos números naturais até mil é: {EscrevaOconjunto HSP_}"
+                                  // ∪  ∩  ∈  ∉  ∅  ≠  ≡  ∀  ∃
+
+                                  //Calculando Naturais até 1000 União pares até 2000:
+                                  let NUP = U HSN HSP
+                                  printfn $"A união do conjunto dos naturais até mil com o conjunto dos números pares até dois mil é: {EscrevaOconjunto NUP}"
+                                  printfn ""
+
+                                  //Calculando Naturais até 1000 Interseção Pares até 2000:
+                                  let NIP = ``∩`` HSN HSP
+                                  printfn $"A interseção do conjunto dos naturais até mil, com o conjunto dos números pares até 2000 é: {EscrevaOconjunto NIP}"
+                                  printfn ""
+
+                                  //Calculando Naturais até 1000 Diferença Pares até 2000:
+                                  let NdifP = ``-`` HSN HSP
+                                  printfn $"O conjunto dos naturais até mil, menos o conjunto dos números pares até 2000 é: {EscrevaOconjunto NdifP}"
+                                  printfn ""
+
+                                  //Calculando o Complementar dos Pares até 2000 em relação aos Naturais até 1000:
+                                  let HSP_ = A_ HSP HSN
+                                  printfn $"O complementar dos números pares até dois mil em relação ao conjunto dos números naturais até mil é: {EscrevaOconjunto HSP_}"
                      
                      
                      //Função para converter HashSet em lista:
                       
-                      let HSToList (A: HashSet<'T>) : 'T list =
-                          let Tolist = A |> Seq.toList
-                          Tolist
+                                  let HSToList (A: HashSet<'T>) : 'T list =
+                                      let Tolist = A |> Seq.toList
+                                      Tolist
 
-                      let meuSet = HashSet<double>([1.0; 2.0; 3.0; 4.0; 5.0])
+                                  let meuSet = HashSet<double>([1.0; 2.0; 3.0; 4.0; 5.0])
   
-                      let comoLista = HSToList meuSet       
+                                  let comoLista = HSToList meuSet       
                       
-                      let minhaLista = meuSet |> Seq.toList // Função para converter Set em lista
+                                  let minhaLista = meuSet |> Seq.toList // Função para converter Set em lista
 
-                      //Convertendo lista em HashSet:
-                      let ListToHS (lista: 'T list) : HashSet<'T> =
-                          let toHS = HashSet<'T>(lista)
-                          toHS
+                                  //Convertendo lista em HashSet:
+                                  let ListToHS (lista: 'T list) : HashSet<'T> =
+                                      let toHS = HashSet<'T>(lista)
+                                      toHS
 
-                      let listaExemplo = [1.0; 2.0; 3.0; 4.0; 5.0]
-                      let A = ListToHS listaExemplo
+                                  let listaExemplo = [1.0; 2.0; 3.0; 4.0; 5.0]
+                                  let hashSet = ListToHS listaExemplo
          
 
                       //Função recursiva de escolha entre várias operações de conjuntos diferentes
-                      let rec OperaçõesDeConjuntos()=
-                          printfn "" 
-                          printfn "Que operação você quer calcular com os seus conjuntos?"
-                          printfn "P)Pertence ou não pertence (∈, ∉)| U)União (∪)| I)Intersecção (∩)| C)Complementar (C\u0304)| D)Diferença (-)| E) Conjunto Das Partes (Pa) | q) Sair"
-                          printfn "Digite a letra inicial da operação que deseja efetuar: "
+                                  let rec OperaçõesDeConjuntos()=
+                                      printfn "" 
+                                      printfn "Que operação você quer calcular com os seus conjuntos?"
+                                      printfn "P)Pertence ou não pertence (∈, ∉)| U)União (∪)| I)Intersecção (∩)| C)Complementar (C\u0304)| D)Diferença (-)| E) Conjunto Das Partes (Pa) | q) Sair"
+                                      printfn "Digite a letra inicial da operação que deseja efetuar: "
                           
-                          let entrada2 : option<string> =
-                              match Console.ReadLine() with
-                              | null -> None
-                              | valor -> Some valor
+                                      let entrada2 : option<string> =
+                                          match Console.ReadLine() with
+                                          |null -> None
+                                          |valor -> Some valor
 
-                          match entrada2 with
-                          |None       ->   
-                                            printfn"Entrada nula! Digite uma entrada válida!"
-                                            OperaçõesDeConjuntos ()
-                          |Some valor -> 
+                                      match entrada2 with
+                                      |None     ->   
+                                                    printfn"Entrada nula! Digite uma entrada válida!"
+                                                    OperaçõesDeConjuntos ()
+
+                                      |Some valor -> 
 
                                             match valor with                     
                                             |"Q"|"q" -> 
@@ -339,22 +375,23 @@ let rec ComputandoOperações operação =
                                             |"U"|"u" ->
                                                          let mutable união = HashSet<double>()
                                                          for i = 0 to quantidade - 2 do
-                                                          união <- AUB (conjunto.[i]) (conjunto.[i+1])
+                                                          união <- U (conjunto.[i]) (conjunto.[i+1])
                                                          printfn $"A união dos conjuntos é: {EscrevaOconjunto união}" 
 
                                             |"I"|"i" -> 
                                                          let mutable intersecção = HashSet<double>()
                                                          for i = 0 to quantidade - 2 do
-                                                          intersecção <- AIB (conjunto.[i]) (conjunto.[i+1])
+                                                          intersecção <- ``∩`` (conjunto.[i]) (conjunto.[i+1])
                                                          printfn $"A interseção dos conjuntos é: {EscrevaOconjunto intersecção}"
 
                                             |"D"|"d" -> 
                                                          let mutable diferença = HashSet<double>()
                                                          for i = 0 to quantidade - 2 do
-                                                          diferença <- AdifB (conjunto.[i]) (conjunto.[i+1])
+                                                          diferença <- ``-`` (conjunto.[i]) (conjunto.[i+1])
                                                          printfn $"A diferença dos conjuntos é: {EscrevaOconjunto diferença}"
 
-                                            |"P"|"p" ->  printf "Para qual conjunto você quer testar pertinência? Digite a letra do conjunto: "
+                                            |"P"|"p" -> 
+                                                         printf "Para qual conjunto você quer testar pertinência? Digite a letra do conjunto: "
                                                          entrada <- Console.ReadLine ()
                                                          let letraDoconjunto = entrada
 
@@ -366,7 +403,7 @@ let rec ComputandoOperações operação =
                      
                                                          if mapa.ContainsKey(letraDoconjunto) then
                                           
-                                                          if apA elemento mapa.[letraDoconjunto] then
+                                                          if ``∈`` elemento mapa.[letraDoconjunto] then
                                                               printfn $"O elemento {elemento} pertence a {letraDoconjunto} de fato, pois {letraDoconjunto} = {{{conjuntoFormatado}}}"       
                                                           else
                                                              printfn $"O elemento {elemento} NÃO pertence a {letraDoconjunto}, pois {letraDoconjunto} = {{{conjuntoFormatado}}}"
@@ -377,37 +414,49 @@ let rec ComputandoOperações operação =
 
                                             |_       ->  printfn "Entrada inválida. Tente novamente." 
                                                          OperaçõesDeConjuntos ()
+                                  printfn""
 
                           
-                          let rec outraOp () =
-                              printfn "Deseja fazer outra operação com os mesmos conjuntos?(S/N)"
-                              let entrada3 : option<string> =
-                                  match Console.ReadLine() with
-                                  | null -> None
-                                  | valor -> Some valor
+                                  let rec outraOp () =
+                                      printfn "Se deseja fazer outras operações com os mesmos conjuntos, digite a letra 'O'"
+                                      printfn "Se deseja escolher novos conjuntos, digite a letra 'C'"
+                                      printfn"Para prosseguir com o programa, digite a letra 'P'"
+                                      printf"Ou então digite 'Q' para sair: "
 
-                              match entrada3 with
-                              |None   -> failwith "Entrada nula! Digite uma entrada válida!"
-                                         outraOp ()
-                              |Some valor -> 
+                                  let entrada3 : option<string> =
+                                      match Console.ReadLine() with
+                                      | null -> None
+                                      | valor -> Some valor
+
+                                  match entrada3 with
+                                  |None   -> printfn"Entrada nula! Digite uma entrada válida!"
+                                             outraOp ()
+                                  |Some valor -> 
 
                                              match valor.Trim().ToUpper() with
                                              |"Q" ->   theEnd()
-                                                       OperaçõesDeConjuntos ()
-                                             |"N" ->   printfn "Ok"
-                                             |"S" ->   OperaçõesDeConjuntos ()
-                                             |_   ->   printfn"Entrada inesperada! Digite novamente: "
-                                                       outraOp ()
-                          printfn""
+                                                       EscolhendoOperações ()
 
-                      printfn ""
+                                             |"O" ->   OperaçõesDeConjuntos ()
+
+                                             |"C" ->   ComputandoOperação operação
+
+                                             |"P" ->   EscolhendoOperações ()
+
+                                             |_   ->   printfn"Entrada inesperada! Digite uma das letras a seguir: "
+                                                       outraOp ()
+                                  printfn""
+
+                                  printfn ""
 
         //Permitir o usuário fazer, por exemplo,( A U B inter C) dif D //Vou fazer uma calculadora de conjuntos a parte
         //Permitir ao usuário passar conjuntos de forma sequencial através do Console, ex: {1..10..100}
         //Repassar para o usuário todo o poder do F#
               
-                     
-    | "Multiplicação"        ->  printfn "Você escolheu Multiplicação!" //Copiar e colar o código da Adição acima. Trocar apenas a operação
+                      
+    |"Multiplicação"        ->   Console.WriteLine()
+
+                                 printfn "Você escolheu Multiplicação!" //Copiar e colar o código da Adição acima. Trocar apenas a operação
                                  printf "Digite os valores a serem multiplicados com espaços entre eles: "
 
                                  entrada <- Console.ReadLine ()
@@ -424,9 +473,12 @@ let rec ComputandoOperações operação =
                                  printfn "%s" textoConcatenado
                                  printfn "Gera(m) o total de: %s" produtoString
               
-                                 maisUmaoperação ComputandoOperações operação
+                                 maisUmaoperação ComputandoOperação operação
+                                 EscolhendoOperações ()
 
-    | "Divisão"              -> printfn "Você escolheu \"Divisão\"!"
+    |"Divisão"              ->  Console.WriteLine()
+
+                                printfn "Você escolheu \"Divisão\"!"
                                 printf "Digite o valor 1: "
 
                                 entrada <- Console.ReadLine()
@@ -445,7 +497,12 @@ let rec ComputandoOperações operação =
 
                                 printfn ""
 
-    | "Exponenciação"        -> printfn "Você escolheu \"Exponenciação\"!"
+                                maisUmaoperação ComputandoOperação operação
+                                EscolhendoOperações ()
+
+    |"Exponenciação"        ->  Console.WriteLine()
+
+                                printfn "Você escolheu \"Exponenciação\"!"
                                 printf "Digite a base da potência: "
 
                                 entrada <- Console.ReadLine()
@@ -468,7 +525,12 @@ let rec ComputandoOperações operação =
         
                                 printfn ""
 
-    | "Raiz quadrada"        -> printfn"Você escolheu |Raiz quadrada|!"
+                                maisUmaoperação ComputandoOperação operação
+                                EscolhendoOperações ()
+
+    |"Raiz quadrada"        ->  Console.WriteLine()
+                                
+                                printfn"Você escolheu |Raiz quadrada|!"
 
                                 printf "Digite o número: "
 
@@ -482,7 +544,12 @@ let rec ComputandoOperações operação =
         
                                 printfn ""
 
-    | "Fatorial"             -> printfn"Você escolheu \"Fatorial\"!"
+                                maisUmaoperação ComputandoOperação operação
+                                EscolhendoOperações ()
+
+    |"Fatorial"             ->  Console.WriteLine()
+                                
+                                printfn"Você escolheu \"Fatorial\"!"
 
                                 printf "Digite o número inteiro!: "
 
@@ -502,7 +569,12 @@ let rec ComputandoOperações operação =
         
                                 printfn ""    
 
-    | "Fibonacci"            -> printfn"Você escolheu |Fibonacci|!"
+                                maisUmaoperação ComputandoOperação operação
+                                EscolhendoOperações ()
+
+    |"Fibonacci"            ->  Console.WriteLine()
+           
+                                printfn"Você escolheu |Fibonacci|!"
 
                                 let valor = int entrada
 
@@ -537,15 +609,20 @@ let rec ComputandoOperações operação =
 
                                 printfn "O desvio entre o valor real e o valor aproximado de phi é de: %f" (phi - phiAproximado)
 
-    |_                       -> printfn"Entrada inválida. Tente novamente."
-                                ComputandoOperações operação
+                                maisUmaoperação ComputandoOperação operação
+                                EscolhendoOperações ()
+
+  
     printfn""
 
 [<EntryPoint>]
     let main argv =
         Início ()
         EscolhendoOperações ()
-        ComputandoOperações operação
+
+        Console.WriteLine()
+
+        ComputandoOperação operação
         0 // código de saída
 
 

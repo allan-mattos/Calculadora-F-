@@ -3,42 +3,43 @@
 namespace MathLibrary
 
 open System.Collections.Generic
+open System
 
 // COLA RÁPIDA:
 // ∪  ∩  ∈  ∉  ∅  ≠  ≡  ∀  ∃
 
 [<AutoOpen>]
 module MathLang =
-
+    //Lembrar de dar um jeito de criar snippets para essas funções
     //TEORIA DOS CONJUNTOS
-    let inline  AUB' A B = Set.union A B
+    let inline  U' A B = Set.union A B             //abrev uni
 
-    let inline  AIB' A B = Set.intersect A B
+    let inline  ``∩'`` A B = Set.intersect A B     //abrev inter
 
-    let inline  apA'  a A = Set.contains a A
+    let inline  ``∈'``  a A = Set.contains a A    //abrev pert
 
-    let inline  AdifB' A B = Set.difference A B
+    let inline  ``-'`` A B = Set.difference A B   //abrev dif
 
-    let inline  A_' A Uni = Set.difference Uni A
+    let inline  A_' A Uni = Set.difference Uni A  //abrev comp
 
-   //Definindo a função apA (pertence  ∈  ∉ ) que verifica se um elemento a pertence ao conjunto A 
-    let inline apA (a: double) (A: HashSet<double>) : bool =
+   //Definindo a função pertence  (∈  ∉ ) que verifica se um elemento a pertence ao conjunto A 
+    let inline  ``∈`` (a: double) (A: HashSet<double>) : bool =
         A.Contains(a)
 
    //Definindo a função AUB que processa a união de dois conjuntos dados como parâmetros
-    let inline AUB (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
+    let inline U (A: HashSet<double>)  (B: HashSet<double>) : HashSet<double> =
         let união = HashSet<double>(A)
         união.UnionWith(B)
         união
     
-   //Definindo a função AIB que processa a intersecção de dois conjuntos dados como parâmetros
-    let inline AIB (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
+   //Definindo a função ∩ que processa a intersecção de dois conjuntos dados como parâmetros
+    let inline ``∩`` (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
         let interseção = HashSet<double>(A)
         interseção.IntersectWith(B)
         interseção
 
-     //Definindo a função AdifB (A-B) que processa a diferença de dois conjuntos dados como parâmetros
-    let inline AdifB (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
+     //Definindo a função ``-`` (A-B) que processa a diferença de dois conjuntos dados como parâmetros
+    let inline ``-`` (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
         let diferença = HashSet<double>(A)
         diferença.ExceptWith(B)
         diferença
@@ -49,7 +50,8 @@ module MathLang =
         Acomplementar.ExceptWith(A)
         Acomplementar
 
-    let rec inline Pa Alist =
+//Definindo a função Pa que calcula o conjunto das partes de um conjunto transformado em uma lista
+    let rec Pa Alist =
         match Alist with
         | [] -> [[]] // O conjunto potência de [] é [[]] (lista com a lista vazia)
         | head::tail ->
@@ -63,3 +65,15 @@ module MathLang =
             
         // 3. Concatena os subconjuntos sem 'head' e os subconjuntos com 'head'
         subSetsOfTail @ subSetsWithHead
+
+    //Cálculo aritmético
+
+    let inline Pow v1 v2 = Math.Pow ( v1, v2) 
+
+    let inline raiz x = Math.Sqrt(x)
+
+    //Definindo a função arraySoma que calcula a soma dos elementos de um array
+    let inline arraySoma array = Array.fold (fun acc x -> acc + x) 0.0 array
+
+    //Definindo a função arrayProduto que calcula o produto dos elementos de um array
+    let inline arrayProduto array = Array.fold (fun acc x -> acc * x) 1.0 array

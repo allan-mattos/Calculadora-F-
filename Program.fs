@@ -122,31 +122,31 @@ printfn""
 let rec ComputandoOperação operação =
     
     match operação with
-    |"Adição"  ->     Console.WriteLine()  
+    |"Adição de grandes volumes"->Console.WriteLine()  
 
-                      printf "Digite os valores a serem somados com espaços entre eles: "
+                                  printf "Digite os valores a serem somados com espaços entre eles: "
 
-                      entrada <- Console.ReadLine ()
+                                  entrada <- Console.ReadLine ()
 
-                      let StringEntrada = string entrada
-                      let separadores = [| ' '; ';'; ':' |]
-                      let StringArrayValSeparados = StringEntrada.Split(separadores, StringSplitOptions.RemoveEmptyEntries)
-                      let EntradaParaFloatArray = Array.map (float) StringArrayValSeparados
-                      let soma = arraySoma EntradaParaFloatArray
-                      let somaString = (string)soma
-                      let textoConcatenado = String.concat ", " StringArrayValSeparados // Embora Split forme um array com separadores, para imprimirmos no Console necessitamos concatenar com ,
+                                  let StringEntrada = string entrada
+                                  let separadores = [| ' '; ';'; ':' |]
+                                  let StringArrayValSeparados = StringEntrada.Split(separadores, StringSplitOptions.RemoveEmptyEntries)
+                                  let EntradaParaFloatArray = Array.map (float) StringArrayValSeparados
+                                  let soma = arraySoma EntradaParaFloatArray
+                                  let somaString = (string)soma
+                                  let textoConcatenado = String.concat ", " StringArrayValSeparados // Embora Split forme um array com separadores, para imprimirmos no Console necessitamos concatenar com ,
                   
                    // printf $"O(s) valor(es) "   
                    //   printfn "%s" textoConcatenado
-                      printfn "R: %s" somaString 
+                                  printfn "R: %s" somaString 
 
-                      Console.WriteLine()
+                                  Console.WriteLine()
               
-                      maisUmaoperação ComputandoOperação operação
+                                  maisUmaoperação ComputandoOperação operação
                       
-                      Console.WriteLine()
+                                  Console.WriteLine()
 
-                      EscolhendoOperações ()
+                                  EscolhendoOperações ()
                         
     |"Operações De Conjuntos" ->  Console.WriteLine()
 
@@ -454,27 +454,27 @@ let rec ComputandoOperação operação =
         //Repassar para o usuário todo o poder do F#
               
                       
-    |"Multiplicação"        ->   Console.WriteLine()
+    |"Multiplicação de grandes volumes"->Console.WriteLine()
 
-                                 printfn "Você escolheu Multiplicação!" //Copiar e colar o código da Adição acima. Trocar apenas a operação
-                                 printf "Digite os valores a serem multiplicados com espaços entre eles: "
+                                         printfn "Você escolheu Multiplicação!" //Copiar e colar o código da Adição acima. Trocar apenas a operação
+                                         printf "Digite os valores a serem multiplicados com espaços entre eles: "
 
-                                 entrada <- Console.ReadLine ()
+                                         entrada <- Console.ReadLine ()
 
-                                 let StringEntrada = string entrada
-                                 let separadores = [| ' '; ';'; ':' |]
-                                 let StringArrayValSeparados = StringEntrada.Split(separadores, StringSplitOptions.RemoveEmptyEntries)
-                                 let EntradaParaFloatArray = Array.map (float) StringArrayValSeparados
-                                 let produto = arrayProduto EntradaParaFloatArray
-                                 let produtoString = (string) produto
-                                 let textoConcatenado = String.concat ", " StringArrayValSeparados // Embora Split forme um array com separadores, para imprimirmos no Console necessitamos concatenar com ,
+                                         let StringEntrada = string entrada
+                                         let separadores = [| ' '; ';'; ':' |]
+                                         let StringArrayValSeparados = StringEntrada.Split(separadores, StringSplitOptions.RemoveEmptyEntries)
+                                         let EntradaParaFloatArray = Array.map (float) StringArrayValSeparados
+                                         let produto = arrayProduto EntradaParaFloatArray
+                                         let produtoString = (string) produto
+                                         let textoConcatenado = String.concat ", " StringArrayValSeparados // Embora Split forme um array com separadores, para imprimirmos no Console necessitamos concatenar com ,
                   
-                                 printf $"O(s) valor(es) "   
-                                 printfn "%s" textoConcatenado
-                                 printfn "Gera(m) o total de: %s" produtoString
+                                         printf $"O(s) valor(es) "   
+                                         printfn "%s" textoConcatenado
+                                         printfn "Gera(m) o total de: %s" produtoString
               
-                                 maisUmaoperação ComputandoOperação operação
-                                 EscolhendoOperações ()
+                                         maisUmaoperação ComputandoOperação operação
+                                         EscolhendoOperações ()
 
     |"Divisão"              ->  Console.WriteLine()
 

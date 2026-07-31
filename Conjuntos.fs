@@ -26,6 +26,7 @@ module Conjuntos =
           Universo <-  Set.union Universo cjs.[i] 
         Universo   
 
+//Função que testa se um elemento a pertence ao conjunto A ou não... 
     let inline  p' a A = Set.contains a A //abrev pert Ex.: let apA = p' a A
    //Criando a função que escreve o nome e cada elemento de um conjunto (HashSet) dado como parâmetro:
     let inline EscrevaOconjunto (nome : string) (Conjunto : HashSet<double>) =

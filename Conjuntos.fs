@@ -28,7 +28,6 @@ module Conjuntos =
 
     let inline  p' a A = Set.contains a A //abrev pert Ex.: let apA = p' a A
    //Criando a função que escreve o nome e cada elemento de um conjunto (HashSet) dado como parâmetro:
-
     let inline EscrevaOconjunto (nome : string) (Conjunto : HashSet<double>) =
 
         let agrupeSeqElementos = Conjunto|> Seq.map string|> String.concat ", "

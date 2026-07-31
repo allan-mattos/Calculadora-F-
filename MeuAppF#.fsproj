@@ -7,10 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Conjuntos.fs" />
+    <Compile Include="Functions.fs" />
     <Compile Include="MathLang.fs" />
     <None Include="testePlanilha.fsx" />
     <None Include="Pares.xlsx" />
     <None Include="Naturais.xlsx" />
+    <Compile Include="ExeFunctions.fs" />
+    <Compile Include ="semiProgram.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

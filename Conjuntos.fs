@@ -6,7 +6,8 @@ open System
 [<AutoOpen>]
 module Conjuntos =
     //Lembrar de dar um jeito de criar snippets para essas funções
-    //TEORIA DOS CONJUNTOS
+
+    //CONJUNTOS
     let inline  U' A B = Set.union A B             // união. Ex.: let AUB = U' A B
 
     let inline  Y' A B = Set.intersect A B     // intersecção. Ex.: let AnB = Y' A B
@@ -28,6 +29,7 @@ module Conjuntos =
 
 //Função que testa se um elemento a pertence ao conjunto A ou não... 
     let inline  p' a A = Set.contains a A //abrev pert Ex.: let apA = p' a A
+
    //Criando a função que escreve o nome e cada elemento de um conjunto (HashSet) dado como parâmetro:
     let inline EscrevaOconjunto (nome : string) (Conjunto : HashSet<double>) =
 
@@ -51,10 +53,12 @@ module Conjuntos =
 
      //Definindo a função  M(A-B) que processa a diferença de dois conjuntos (Hash)dados como parâmetros
     let inline M (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
-        let AMB = HashSet<double>(A)
-        AMB.ExceptWith(B)
-        AMB
-    //Exemplo de uso: let diferença = M A B
+        let ``A-B`` = HashSet<double>(A)
+        ``A-B``.ExceptWith(B)
+        ``A-B``
+    //Exemplo de uso: let diferença = M A B ou let ``A-B`` = M A B
+
+    
 
      //////////////////////Parei aqui:
      //Definindo a função C, que processa o complementar de um conjunto Hash  A em relação ao universo Uni

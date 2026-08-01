@@ -8,24 +8,23 @@ module Conjuntos =
     //Lembrar de dar um jeito de criar snippets para essas funções
 
     //CONJUNTOS
-    let inline  U' A B = Set.union A B             // união. Ex.: let AUB = U' A B
-
-    let inline  Y' A B = Set.intersect A B     // intersecção. Ex.: let AnB = Y' A B
-
-    let inline  M' A B = Set.difference A B   //abrev diferença. Ex.: let AmB = M' A B
-
-    let inline  C' A Uni = M' Uni A  //abrev complementar de um conjunto A em relação ao Universo. Ex.: let Ac = C' A Uni
-
-    let inline A' (L: seq<'T>) : Set<double> =  // Ex.: let A = A' L
-        L
+  //Função que pega qualquer tipo de coleção ou sequência e transforma em um Set
+    let inline A (Col: seq<'T>) : Set<double> = 
+        Col
         |> Seq.map double
         |> Set
 
-    let inline Uni' (cjs: Set<double>[]) : Set<double>  = //Função Uni que calcula o Universo a partir de um array de conjuntos (Set<double>)
-        let mutable Universo : Set<double> = Set.empty 
-        for i = 0 to (cjs.Length) - 1 do   
-          Universo <-  Set.union Universo cjs.[i] 
-        Universo   
+
+    let inline  U' A B = Set.union A B             // união. Ex. de uso: let AUB = U' A B
+
+    let inline  Y' A B = Set.intersect A B     // intersecção. Ex. de uso: let AnB = Y' A B
+
+    let inline  D' A B = Set.difference A B   //abrev diferença. Ex.: let ``A-B`` = D' A B
+
+    let inline  C' A Uni = D' Uni A  //abrev complementar de um conjunto A em relação ao Universo. Ex.: let Ac = C' A Uni
+
+    let inline Uni (cjs: seq<Set<double>>) : Set<double> = //Calcula o Universo. . Ela recebe uma sequência ou array de conjuntos e retorna a união de todos eles de uma vez.
+        Set.unionMany cjs
 
 //Função que testa se um elemento a pertence ao conjunto A ou não... 
     let inline  p' a A = Set.contains a A //abrev pert Ex.: let apA = p' a A
@@ -51,16 +50,13 @@ module Conjuntos =
         AIB
     //Exemplo de uso: let intersecção = Y A B
 
-     //Definindo a função  M(A-B) que processa a diferença de dois conjuntos (Hash)dados como parâmetros
-    let inline M (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
+     //Definindo a função  D(A-B) que processa a diferença de dois conjuntos (Hash)dados como parâmetros
+    let inline D (A: HashSet<double>) (B: HashSet<double>) : HashSet<double> =
         let ``A-B`` = HashSet<double>(A)
         ``A-B``.ExceptWith(B)
         ``A-B``
-    //Exemplo de uso: let diferença = M A B ou let ``A-B`` = M A B
+    //Exemplo de uso: let diferença = D A B ou let ``A-B`` = D A B
 
-    
-
-     //////////////////////Parei aqui:
      //Definindo a função C, que processa o complementar de um conjunto Hash  A em relação ao universo Uni
     let inline C (A: HashSet<double>) (Uni: HashSet<double>) : HashSet<double> =
         let AC = HashSet<double>(Uni)
@@ -69,17 +65,11 @@ module Conjuntos =
     //Exemplo de uso: let Acomplementar = C A Uni
 
     //Função A que transforma uma lista de tipo genérico de elementos numéricos em um conjunto HashSet<double>
-    let inline A (L: seq<'T>) : HashSet<double> =
+    let inline A'' (L: seq<'T>) : HashSet<double> =
         L
         |> Seq.map double
         |> HashSet
-
-
-    let inline Uni (cj: HashSet<double>[]) : HashSet<double>  =
-        let Universo = HashSet<double>()
-        for i = 0 to (cj.Length) - 1 do   
-            Universo.UnionWith(cj.[i]) 
-        Universo           
+    
 
     //Definindo a função pertence  (p) que verifica se um elemento a pertence ao conjunto A 
     let inline  p (a: double) (A: HashSet<double>) : bool =

@@ -85,8 +85,6 @@ module Functions =
 
          |Some value ->  value
 
-                       
-
 //Caso o usuário digite "q" para sair, temos as funções confirmarSaida e theEnd(principal):
      let inline confirmarSaida () =
          printfn ""

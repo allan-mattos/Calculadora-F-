@@ -18,8 +18,6 @@ open ClosedXML.Excel
 
 open Conjuntos
 
-
-
 [<AutoOpen>]
 module Functions = 
      

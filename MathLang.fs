@@ -12,9 +12,6 @@ open Functions
 [<AutoOpen>]
 module MathLang =
     //Lembrar de dar um jeito de criar snippets para essas funções
-
-  
-
     //Cálculo aritmético
 
     let inline Pow v1 v2 = Math.Pow ( v1, v2) 

@@ -9,11 +9,15 @@ module Conjuntos =
 
     //CONJUNTOS
   //Função que pega qualquer tipo de coleção ou sequência e transforma em um Set
-    let inline A (Col: seq<'T>) : Set<double> = 
+    let inline A' (Col: seq<'T>) : Set<double> = 
         Col
         |> Seq.map double
         |> Set
 
+    let inline  A (Col: seq<'T>) : HashSet<double> = 
+        Col
+        |> Seq.map double
+        |> HashSet
 
     let inline  U' A B = Set.union A B             // união. Ex. de uso: let AUB = U' A B
 
@@ -23,8 +27,15 @@ module Conjuntos =
 
     let inline  C' A Uni = D' Uni A  //abrev complementar de um conjunto A em relação ao Universo. Ex.: let Ac = C' A Uni
 
-    let inline Uni (cjs: seq<Set<double>>) : Set<double> = //Calcula o Universo. . Ela recebe uma sequência ou array de conjuntos e retorna a união de todos eles de uma vez.
+    let inline Uni' (cjs: seq<Set<double>>) : Set<double> = //Calcula o Universo. . Ela recebe uma coleção ou array de conjuntos e retorna a união de todos eles de uma vez.
         Set.unionMany cjs
+    
+    
+    let uniHash (cjs: seq<HashSet<double>>) : HashSet<double> =
+        let resultado = HashSet<double>()
+        for conjunto in cjs do
+            resultado.UnionWith(conjunto)
+        resultado
 
 //Função que testa se um elemento a pertence ao conjunto A ou não... 
     let inline  p' a A = Set.contains a A //abrev pert Ex.: let apA = p' a A
@@ -75,31 +86,98 @@ module Conjuntos =
     let inline  p (a: double) (A: HashSet<double>) : bool =
         A.Contains(a)
 
-
+    type ``P(A)`` =
+        
+        static member Calcular (Alist: 'T list) =
     //Definindo a função Pa que calcula o conjunto das partes (lista de listas) de um conjunto passado como parâmetro em  forma de uma lista
-    let rec Pa Alist =
-        match Alist with
-        | [] -> [[]] // O conjunto potência de [] é [[]] (lista com a lista vazia)
-        | head::tail ->
+            let rec Pa Alist =
+                match Alist with
+                | [] -> [[]] // O conjunto potência de [] é [[]] (lista com a lista vazia)
+                | head::tail ->
         // 1. Encontra todos os subconjuntos do restante da lista (tail)
-        let subSetsOfTail = Pa tail 
+                    let subSetsOfTail = Pa tail 
         
         // 2. Cria novos subconjuntos adicionando 'head' a cada um deles
-        let subSetsWithHead = 
-            subSetsOfTail 
-            |> List.map (fun subList -> head :: subList)
+                    let subSetsWithHead = subSetsOfTail |> List.map (fun subList -> head :: subList)
             
         // 3. Concatena os subconjuntos sem 'head' e os subconjuntos com 'head'
-        subSetsOfTail @ subSetsWithHead
+                    subSetsOfTail @ subSetsWithHead
 
-    let EscrevaPa N=
+            Pa Alist
+
+   
+        static member Calcular(ASet: Set<'T> when 'T : comparison) =    
+            let estadoInicial = Set.singleton Set.empty
+            ASet
+            |> Set.fold (fun subconjuntosAtuais elemento ->
+                let novosSubconjuntos = subconjuntosAtuais |> Set.map (Set.add elemento)
+                Set.union subconjuntosAtuais novosSubconjuntos
+            ) estadoInicial
+
+        
      
-        let subconjuntos = 
-            N
-            |> List.map (fun sub -> 
-                sub |> List.map string |> String.concat ", " |> sprintf "{%s}"
-            )
-            |> String.concat ", "
+        static member Calcular(ASet: HashSet<'T>) =
+        
+            // O "segredo" para conjuntos de conjuntos no .NET funcionarem matematicamente
+            let comparador = HashSet<'T>.CreateSetComparer()
+        
+            // 1. Estado inicial passando o comparador
+            let estadoInicial = new HashSet<HashSet<'T>>(comparador)
+            estadoInicial.Add(new HashSet<'T>()) |> ignore
+        
+            // 2. Anotamos os tipos no fold para o compilador não se perder na sobrecarga
+            ASet
+            |> Seq.fold (fun (subconjuntosAtuais: HashSet<HashSet<'T>>) (elemento: 'T) ->
+            
+                // Passamos a coleção e o comparador estrutural
+                let uniao = new HashSet<HashSet<'T>>(subconjuntosAtuais, comparador)
+            
+                for subconjunto in subconjuntosAtuais do
+                    let novoSubconjunto = new HashSet<'T>(subconjunto) 
+                    novoSubconjunto.Add(elemento) |> ignore
+                    uniao.Add(novoSubconjunto) |> ignore
+                
+                uniao 
+            
+            ) estadoInicial
 
-        printfn "%A = {%s}" N subconjuntos
-        printfn ""
+
+        static member Escrever (Lista: 'T list list) =
+            let subconjuntos = 
+                Lista
+                |> List.map (fun sub -> 
+                    sub |> List.map string |> String.concat ", " |> sprintf "{%s}"
+                )
+                |> String.concat "; "
+            printfn "%A = {%s}" Lista subconjuntos
+            printfn ""
+        
+     
+        static member Escrever (ASet: Set<Set<'T>> when 'T : comparison) =
+            let subconjuntos = 
+                ASet
+                |> Set.toList
+                |> List.map (fun sub -> 
+                    sub |> Set.toList |> List.map string |> String.concat ", " |> sprintf "{%s}"
+                )
+                |> String.concat "; "
+            printfn "%A = {%s}" ASet subconjuntos
+            printfn ""
+
+        static member Escrever (ASet: HashSet<HashSet<'T>>) =
+            let comparador = HashSet<'T>.CreateSetComparer()
+            let subconjuntos = 
+                ASet
+                |> Seq.toList
+                |> List.map (fun sub -> 
+                    sub |> Seq.toList |> List.map string |> String.concat ", " |> sprintf "{%s}"
+                )
+                |> String.concat ", "
+            printfn "%A = {%s}" ASet subconjuntos
+            printfn ""
+
+//Exemplos:
+    let  P = ``P(A)``.Calcular([1,2])
+
+    let E = ``P(A)``.Escrever([[1,2]])
+        

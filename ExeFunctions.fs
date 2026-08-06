@@ -127,7 +127,6 @@ module ExeFunctions =
                                         StringArrayValSeparados
                                         |> Array.choose ``ÉDouble?``
 
-                                     
                                     match EntradaParaDoubleArray with
                                     | [||] -> 
                                              printfn "Nenhum valor válido foi digitado! Digite apenas números!"
@@ -137,8 +136,7 @@ module ExeFunctions =
                                     | [| unicoValor |] -> conjuntos.[i].Clear()
                                                           conjuntos.[i].Add unicoValor |> ignore
                                                           sets.[i] <- Set.singleton unicoValor
-                                                         
-                                                            
+   
 
                                     | valores ->      let set = valores |> Set.ofArray
                                                       sets.[i] <- set
@@ -477,7 +475,7 @@ module ExeFunctions =
                                                     
                                                     |"5" ->         printfn"Você escolheu o conjunto Universo (Uni), isto é, a União de Todos os Conjuntos Listados!"
                                                                     printfn"A união de todos os conjuntos listados é: "
-                                                                    Uni conjuntos |> EscrevaOconjunto nomes.[20] 
+                                                                    uniHash conjuntos |> EscrevaOconjunto nomes.[20] 
                        
                                                     |_       ->  
                                                                     printfn "Entrada inválida. Tente novamente." 
@@ -507,7 +505,7 @@ module ExeFunctions =
                                 |"D"|"d" -> 
                                                      let mutable diferença = HashSet<double>()
                                                      for i = 0 to quantidade - 2 do
-                                                         diferença <- M (conjuntos.[i]) (conjuntos.[i+1])
+                                                         diferença <- D (conjuntos.[i]) (conjuntos.[i+1])
                                                      printfn "A diferença dos conjuntos...:"
                                                      for i = 0 to quantidade - 1 do   
                                                          EscrevaOconjunto nomes.[i] mapa1.[nomes.[i]]
@@ -723,8 +721,6 @@ module ExeFunctions =
                                             printfn $"O fatorial de {valor} ({valor}!), é: {resultado}"
         
                                             printfn ""    
-
-                                   
 
         |"Fibonacci"            ->          Console.WriteLine()
            

@@ -12,13 +12,26 @@ module Conjuntos =
     |CjSet of Set<'T>
     |CjHashSet of HashSet<'T>
 
-    let inline A cj = // pega qualquer tipo de coleção e retorna um Set.
+    let inline A (cj) = // pega qualquer tipo de coleção e retorna um Set.
         match cj with
         |Sequência sq ->  sq |>Seq.map double  |> set
         |Lista l ->  l |>Seq.map double  |> set
         |CjSet s->  s |> Set.map double 
         |CjHashSet hs -> hs |>Seq.map double |> set
 
+    let inline H (cj) = // pega qualquer tipo de coleção e retorna um HashSet.
+        match cj with
+        |Sequência sq ->  sq |>Seq.map double  |> HashSet
+        |Lista l ->  l |>Seq.map double  |> HashSet
+        |CjSet s->  s |> Set.map double |> HashSet
+        |CjHashSet hs -> hs |>Seq.map double |> HashSet
+
+    let inline L (cj) = // pega qualquer tipo de coleção e retorna uma lista.
+        match cj with
+        |Sequência sq ->  sq |>Seq.map double  |> List.ofSeq
+        |Lista l ->  l |>Seq.map double  |> List.ofSeq
+        |CjSet s->  s |> Set.map double |> List.ofSeq
+        |CjHashSet hs -> hs |>Seq.map double |> List.ofSeq
 
     let inline  U' A B = Set.union A B             // união. Ex. de uso: let AUB = U' A B
 

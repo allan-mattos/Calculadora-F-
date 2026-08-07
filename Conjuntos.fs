@@ -5,19 +5,20 @@ open System
 
 [<AutoOpen>]
 module Conjuntos =
-    //Lembrar de dar um jeito de criar snippets para essas funções
+   
+    type Conjunto<'T when 'T : comparison> = 
+    |Sequência of seq<'T>
+    | Lista of 'T list
+    |CjSet of Set<'T>
+    |CjHashSet of HashSet<'T>
 
-    //CONJUNTOS
-  //Função que pega qualquer tipo de coleção ou sequência e transforma em um Set
-    let inline A' (Col: seq<'T>) : Set<double> = 
-        Col
-        |> Seq.map double
-        |> Set
+    let inline A cj = // pega qualquer tipo de coleção e retorna um Set.
+        match cj with
+        |Sequência sq ->  sq |>Seq.map double  |> set
+        |Lista l ->  l |>Seq.map double  |> set
+        |CjSet s->  s |> Set.map double 
+        |CjHashSet hs -> hs |>Seq.map double |> set
 
-    let inline  A (Col: seq<'T>) : HashSet<double> = 
-        Col
-        |> Seq.map double
-        |> HashSet
 
     let inline  U' A B = Set.union A B             // união. Ex. de uso: let AUB = U' A B
 

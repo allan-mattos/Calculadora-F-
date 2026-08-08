@@ -6,32 +6,40 @@ open System
 [<AutoOpen>]
 module Conjuntos =
    
-    type Conjunto<'T when 'T : comparison> = 
-    |Sequência of seq<'T>
-    | Lista of 'T list
-    |CjSet of Set<'T>
-    |CjHashSet of HashSet<'T>
+    type Coleção<'T when 'T : comparison> = 
+    |Sq of seq<'T>
+    |Li of 'T list
+    |CjS of Set<'T>
+    |CjH of HashSet<'T>
 
-    let inline A (cj) = // pega qualquer tipo de coleção e retorna um Set.
-        match cj with
-        |Sequência sq ->  sq |>Seq.map double  |> set
-        |Lista l ->  l |>Seq.map double  |> set
-        |CjSet s->  s |> Set.map double 
-        |CjHashSet hs -> hs |>Seq.map double |> set
+    let inline A (cl) = // pega qualquer tipo de coleção e retorna um conjunto Set.
+        match cl with
+        |Sq  sq ->   sq  |> set  // Ex: let AS = A (S ( Seq.ofList [1;2;3]) ) ou let AS = A( S ( seq {1;2;3} )
+        |Li  l  ->   l   |> set
+        |CjS s  ->   s  
+        |CjH h  ->   h   |> set
 
-    let inline H (cj) = // pega qualquer tipo de coleção e retorna um HashSet.
-        match cj with
-        |Sequência sq ->  sq |>Seq.map double  |> HashSet
-        |Lista l ->  l |>Seq.map double  |> HashSet
-        |CjSet s->  s |> Set.map double |> HashSet
-        |CjHashSet hs -> hs |>Seq.map double |> HashSet
+    let inline H (cl) = // pega qualquer tipo de coleção e retorna um conjuntoHashSet.
+        match cl with
+        |Sq  sq ->   sq  |> HashSet
+        |Li  l  ->   l   |> HashSet             //Exemplo de uso: let Conjunto = H( Li [1;2;3] ) ou let A = H( S(Seq.ofList [1;2;3]))
+        |CjS s  ->   s   |> HashSet
+        |CjH h  ->   h   
 
-    let inline L (cj) = // pega qualquer tipo de coleção e retorna uma lista.
-        match cj with
-        |Sequência sq ->  sq |>Seq.map double  |> List.ofSeq
-        |Lista l ->  l |>Seq.map double  |> List.ofSeq
-        |CjSet s->  s |> Set.map double |> List.ofSeq
-        |CjHashSet hs -> hs |>Seq.map double |> List.ofSeq
+    let inline L (cl) = // pega qualquer tipo de coleção e retorna uma lista.
+        match cl with
+        |Sq  sq ->   sq  |> List.ofSeq
+        |Li  l  ->   l   
+        |CjS s  ->   s   |> List.ofSeq
+        |CjH h  ->   h   |> List.ofSeq
+
+
+    let inline S (cl) = // pega qualquer tipo de coleção e retorna uma sequência Seq.
+        match cl with
+        |Sq  sq ->   sq  
+        |Li  l  ->   l   :> seq<_>
+        |CjS s  ->   s   :> seq<_>
+        |CjH h  ->   h   :> seq<_>
 
     let inline  U' A B = Set.union A B             // união. Ex. de uso: let AUB = U' A B
 

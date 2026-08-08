@@ -173,7 +173,7 @@ module ExeFunctions =
                         let Doismil = N |> Seq.take 2000|> Seq.map string |> String.concat ", "
                                
 
-                        let DoismilHSet: HashSet<double> = A (N |> Seq.take 2000 |> Seq.toList)
+                        let DoismilHSet = H (Li (N |> Seq.take 2000 |> Seq.toList))
                         printfn "A seguir temos os primeiros dois mil números do conjunto N: "
                         EscrevaOconjunto nomes.[12] DoismilHSet
 

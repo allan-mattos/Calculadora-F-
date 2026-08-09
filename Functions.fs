@@ -47,6 +47,15 @@ module Functions =
          |Some valor -> valor
 
 
+    (*//~Exemplo de aplicação da função GetEntrada()
+     let rec LendoEntrada () : string =
+         let entrada = GetEntrada()
+         match entrada with
+         |G -> (...)
+         |N-> (...)             
+         |valor -> valor
+
+     *)
   //Função que tenta converter a entrada para inteiro:
      let inline ``éInt?`` (Entrada: string) =
          match Int32.TryParse(Entrada) with

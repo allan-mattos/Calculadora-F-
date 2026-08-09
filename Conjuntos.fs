@@ -14,15 +14,15 @@ module Conjuntos =
 
     let inline A (cl) = // pega qualquer tipo de coleção e retorna um conjunto Set.
         match cl with
-        |Sq  sq ->   sq  |> set  // Ex: let AS = A (S ( Seq.ofList [1;2;3]) ) ou let AS = A( S ( seq {1;2;3} )
+        |Sq  sq ->   sq  |> set         // Ex: let AS = A (Sq ( Seq.ofList [1;2;3]) ) ou let AS = A( S ( seq {1;2;3} )
         |Li  l  ->   l   |> set
         |CjS s  ->   s  
         |CjH h  ->   h   |> set
 
     let inline H (cl) = // pega qualquer tipo de coleção e retorna um conjuntoHashSet.
         match cl with
-        |Sq  sq ->   sq  |> HashSet
-        |Li  l  ->   l   |> HashSet             //Exemplo de uso: let Conjunto = H( Li [1;2;3] ) ou let A = H( S(Seq.ofList [1;2;3]))
+        |Sq  sq ->   sq  |> HashSet     // let A = H( S (Seq.ofList [1;2;3]))
+        |Li  l  ->   l   |> HashSet     //Exemplo de uso: let Conjunto = H( Li [1;2;3] ) let A = H( S(Seq.ofList [1;2;3]))
         |CjS s  ->   s   |> HashSet
         |CjH h  ->   h   
 
@@ -33,7 +33,6 @@ module Conjuntos =
         |CjS s  ->   s   |> List.ofSeq
         |CjH h  ->   h   |> List.ofSeq
 
-
     let inline S (cl) = // pega qualquer tipo de coleção e retorna uma sequência Seq.
         match cl with
         |Sq  sq ->   sq  
@@ -41,7 +40,27 @@ module Conjuntos =
         |CjS s  ->   s   :> seq<_>
         |CjH h  ->   h   :> seq<_>
 
-    let inline  U' A B = Set.union A B             // união. Ex. de uso: let AUB = U' A B
+
+  //Função que calcula a união de quaisquer dois conjuntos de dados A e B seja de qual tipo for  e retorna a união deles em forma de um conjunto Set.
+    let inline  Un A B =  
+        
+        let setA = match A with
+                   |Sq  sq ->   sq  |> set     
+                   |Li  l  ->   l   |> set
+                   |CjS s  ->   s  
+                   |CjH h  ->   h   |> set
+       
+        let setB = match B with
+                   |Sq sq ->   sq  |> set    
+                   |Li l  ->   l   |> set
+                   |CjS s  ->   s
+                   |CjH h  ->   h   |> set
+
+        Set.union setA setB  // união. Ex.: let AuB = U' (CjS(A)) (CjS (B))
+        
+    let Sunion A B = Un (CjS(A)) (CjS (B)) // Calcula a união de dois conjuntos A e B do tipo Set. Ex.: let PuA = Sunion P A
+
+    let inline U' A B = Set.union A B     // união. Ex.: let AuB = U' A B
 
     let inline  Y' A B = Set.intersect A B     // intersecção. Ex. de uso: let AnB = Y' A B
 

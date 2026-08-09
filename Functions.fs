@@ -33,7 +33,7 @@ module Functions =
      printfn""
          
          //Função que lê a entrada e retorna o mesmíssimo valor caso não seja nulo. Acaso retorne None, pedimos para o usuário digitar uma entrada não-nula:
-     let rec  LendoEntrada (): string =
+     let rec  GetEntrada (): string =
        
          let imput : option<string> =
              match Console.ReadLine() with
@@ -43,7 +43,7 @@ module Functions =
          match imput with
          |None     -> 
                         printfn"Entrada nula! Digite uma entrada válida!(Apenas números!)"
-                        LendoEntrada () 
+                        GetEntrada() 
          |Some valor -> valor
 
 
@@ -60,7 +60,7 @@ module Functions =
          match ``EntradaÉInteiro?`` with
          |None -> 
                          printfn"Entrada Inválida! Digite um número inteiro! "
-                         let Entradai = LendoEntrada ()
+                         let Entradai = GetEntrada()
                          PxLinhaSóSeInteiro Entradai 
 
          |Some value ->  value
@@ -78,7 +78,7 @@ module Functions =
          |None -> 
                          printfn"Entrada Inválida! Digite um número inteiro! "
                          
-                         let Entradai = LendoEntrada ()
+                         let Entradai = GetEntrada()
                          PxLinhaSóSeDouble Entradai 
 
          |Some value ->  value
@@ -146,7 +146,7 @@ module Functions =
          Console.WriteLine()
          printf@"         "
 
-         let entrada = LendoEntrada ()
+         let entrada = GetEntrada ()
 
          let ``|Entrada|`` = entrada.Trim().ToUpper()
 
@@ -179,7 +179,7 @@ module Functions =
          PrinTex texto
          printfn"\t (Ou então digite 'Q' para sair): "
 
-         let entrada = LendoEntrada ()
+         let entrada = GetEntrada ()
          let ``|Entrada|`` = entrada.Trim().ToUpper()
 
          printfn ""

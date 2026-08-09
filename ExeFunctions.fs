@@ -74,12 +74,22 @@ module ExeFunctions =
                                                 printfn " = %f" soma |> ignore
                         
         |"Conjuntos"->    
-                        let texto = @"-------//////////////////////ADIÇÃO\\\\\\\\\\\\\\\\\\\\\\-------"
+                        let texto =  "-------==========//////////////////////CONJUNTOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\==========-------"
 
                         ImprimirCentralizado texto |> ignore
 
                         printfn"Você escolheu Operações De Conjuntos!"
-                        
+                        printfn "Deseja trabalhar com conjuntos genéricos ou numéricos?"
+                        printfn "Digite G para genéricos ou N para numéricos: "
+
+                        let entrada = LendoEntrada ()
+                        let rec match entrada.Trim().ToUpper() with
+                        |"G" -> printfn "Você escolheu conjuntos genéricos!"
+
+                        |"N" -> printfn "Você escolheu conjuntos numéricos!"
+
+                        |_ -> printfn "Entrada inválida! Digite G para genéricos ou N para numéricos."
+
                         let rec pedirNumero  () : int =
                             printfn "Com quantos conjuntos você quer trabalhar?"
                             let entrada = LendoEntrada ()
